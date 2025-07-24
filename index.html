@@ -72,6 +72,38 @@
             opacity: 0.9;
         }
 
+        /* Streak Tracker */
+        .streak-tracker {
+            background-color: #374151;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .streak-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .streak-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .streak-count {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #FBBF24;
+        }
+
+        .streak-message {
+            font-size: 0.875rem;
+            color: #9CA3AF;
+        }
+
         .phase-display {
             border-radius: 1rem;
             padding: 2rem;
@@ -448,31 +480,34 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1>AM1</h1>
             <p>3-Phase Workout Timer</p>
         </div>
 
-        <!-- Schedule Status -->
         <div id="scheduleStatus" class="schedule-status workout">
             <div class="schedule-title">💪 Workout Day</div>
             <p class="schedule-message">Ready to start your first workout!</p>
         </div>
 
-        <!-- Current Phase Display -->
+        <div class="streak-tracker">
+            <div class="streak-header">
+                <h3 class="streak-title">🔥 Streak</h3>
+                <span id="currentStreak" class="streak-count">0 days</span>
+            </div>
+            <p id="streakMessage" class="streak-message">No streak yet. Complete a workout to start!</p>
+        </div>
+
         <div id="phaseDisplay" class="phase-display slow">
             <div class="phase-name">SLOW</div>
             <div class="phase-info">Phase 1 of 3</div>
             <div id="phaseTime" class="phase-time">01:00</div>
         </div>
 
-        <!-- Phase Progress Bar -->
         <div class="progress-bar">
             <div id="phaseProgress" class="progress-fill slow" style="width: 0%"></div>
         </div>
 
-        <!-- Total Workout Progress -->
         <div class="workout-progress">
             <div class="workout-progress-header">
                 <span>Total Workout</span>
@@ -483,7 +518,6 @@
             </div>
         </div>
 
-        <!-- Controls -->
         <div class="controls">
             <button id="startBtn" class="btn btn-primary">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -504,7 +538,6 @@
             </button>
         </div>
 
-        <!-- Workout Log -->
         <div id="logSection" class="log-section">
             <div class="log-header">
                 <h3 class="log-title">Workout Log</h3>
@@ -516,11 +549,9 @@
             </div>
             
             <div id="logItems" class="log-items" style="display: none;">
-                <!-- Log items will be inserted here -->
-            </div>
+                </div>
         </div>
 
-        <!-- Phase Schedule -->
         <div class="phase-schedule">
             <h3 class="schedule-title-small">Phase Schedule</h3>
             <div class="schedule-items">
@@ -548,13 +579,11 @@
             </div>
         </div>
 
-        <!-- Completion Banner -->
         <div id="completionBanner" class="completion-banner" style="display: none;">
             <div class="completion-title">🎉 Workout Complete!</div>
             <p class="completion-message">Great job finishing your 15-minute AM1 session!</p>
         </div>
 
-        <!-- Pause Banner -->
         <div id="pauseBanner" class="pause-banner" style="display: none;">
             <div class="pause-title">⏸️ Session Paused</div>
             <p class="pause-message">Your workout will resume from where you left off when you hit Resume!</p>
@@ -562,16 +591,12 @@
     </div>
 
     <script>
-        // Safe storage wrapper with fallback (in-memory storage for Claude artifacts)
+        // Safe localStorage wrapper with fallback
         let tempStorage = {};
         
         function safeSetItem(key, value) {
             try {
-                if (typeof localStorage !== 'undefined') {
-                    localStorage.setItem(key, value);
-                } else {
-                    tempStorage[key] = value;
-                }
+                localStorage.setItem(key, value);
             } catch (e) {
                 tempStorage[key] = value;
             }
@@ -579,25 +604,9 @@
         
         function safeGetItem(key) {
             try {
-                if (typeof localStorage !== 'undefined') {
-                    return localStorage.getItem(key);
-                } else {
-                    return tempStorage[key] || null;
-                }
+                return localStorage.getItem(key);
             } catch (e) {
                 return tempStorage[key] || null;
-            }
-        }
-
-        function safeRemoveItem(key) {
-            try {
-                if (typeof localStorage !== 'undefined') {
-                    localStorage.removeItem(key);
-                } else {
-                    delete tempStorage[key];
-                }
-            } catch (e) {
-                delete tempStorage[key];
             }
         }
 
@@ -614,6 +623,7 @@
         let totalTime = 0;
         let soundEnabled = true;
         let workoutLog = [];
+        let workoutDates = []; // Stores dates of completed workouts for streak
 
         // Phases configuration
         const phases = [
@@ -640,6 +650,8 @@
         const pauseBanner = document.getElementById('pauseBanner');
         const scheduleStatus = document.getElementById('scheduleStatus');
         const soundIcon = document.getElementById('soundIcon');
+        const currentStreak_el = document.getElementById('currentStreak'); // NEW
+        const streakMessage_el = document.getElementById('streakMessage'); // NEW
 
         // Audio context for beeps
         let audioContext = null;
@@ -705,7 +717,11 @@
         }
 
         function clearActiveSession() {
-            safeRemoveItem('am1ActiveSession');
+            try {
+                localStorage.removeItem('am1ActiveSession');
+            } catch (e) {
+                delete tempStorage['am1ActiveSession'];
+            }
         }
 
         function restoreActiveSession() {
@@ -782,7 +798,117 @@
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // Update timer function - FIXED VERSION
+        // Load workout dates from localStorage
+        function loadWorkoutDates() {
+            const savedDates = safeGetItem('am1WorkoutDates');
+            if (savedDates) {
+                try {
+                    workoutDates = JSON.parse(savedDates).map(dateString => new Date(dateString));
+                } catch (e) {
+                    workoutDates = [];
+                }
+            }
+        }
+
+        // Save workout dates to localStorage
+        function saveWorkoutDates() {
+            safeSetItem('am1WorkoutDates', JSON.stringify(workoutDates.map(date => date.toISOString())));
+        }
+
+        // Function to add a completed workout date
+        function addWorkoutDate(date) {
+            // Ensure only one entry per day
+            const today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const lastLoggedDate = workoutDates.length > 0 ? new Date(workoutDates[0].getFullYear(), workoutDates[0].getMonth(), workoutDates[0].getDate()) : null;
+
+            if (!lastLoggedDate || today.getTime() !== lastLoggedDate.getTime()) {
+                workoutDates.unshift(today); // Add to the beginning for easy sorting by most recent
+                saveWorkoutDates();
+            }
+        }
+
+        // Calculate the current streak
+        function calculateStreak() {
+            if (workoutDates.length === 0) {
+                return { streak: 0, message: 'No streak yet. Complete a workout to start!' };
+            }
+
+            // Sort dates in descending order to easily check consecutive days
+            workoutDates.sort((a, b) => b.getTime() - a.getTime());
+
+            let streak = 0;
+            let currentDate = new Date(); // Start from today
+            currentDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+            let lastCheckedDate = null;
+
+            for (let i = 0; i < workoutDates.length; i++) {
+                const workoutDate = new Date(workoutDates[i].getFullYear(), workoutDates[i].getMonth(), workoutDates[i].getDate()); // Normalize workout date
+
+                // If it's today's workout, count it if done, or if already counted in previous iteration
+                if (workoutDate.getTime() === currentDate.getTime()) {
+                    if (streak === 0) streak = 1; // Start streak if first workout is today
+                    lastCheckedDate = workoutDate;
+                } else {
+                    // Check if it's yesterday's workout or the day before for continuation
+                    const expectedPreviousDay = new Date(currentDate);
+                    expectedPreviousDay.setDate(currentDate.getDate() - 1);
+                    expectedPreviousDay.setHours(0, 0, 0, 0);
+
+                    if (workoutDate.getTime() === expectedPreviousDay.getTime()) {
+                        streak++;
+                        currentDate.setDate(currentDate.getDate() - 1); // Move to previous day
+                        lastCheckedDate = workoutDate;
+                    } else if (workoutDate.getTime() < expectedPreviousDay.getTime()) {
+                        // If there's a gap (more than one day), the streak is broken here
+                        break;
+                    }
+                }
+            }
+
+            let message = '';
+            if (streak === 0) {
+                message = 'No streak yet. Complete a workout to start!';
+            } else if (streak === 1) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (workoutDates[0] && workoutDates[0].toDateString() === today.toDateString()) {
+                    message = 'Great job today! Keep it up for a longer streak.';
+                } else {
+                    message = `You completed a workout ${streak} day ago. Start a new one today!`;
+                }
+            } else {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (workoutDates[0] && workoutDates[0].toDateString() === today.toDateString()) {
+                    message = `You're on a roll! Keep it going.`;
+                } else {
+                    // Streak from a previous day, but not today. Suggest starting a new one.
+                    message = `Your last streak was ${streak} days! Start a new one today!`;
+                    // To accurately show the current *active* streak, we might need to reset if last workout wasn't yesterday/today
+                    const lastWorkoutDate = new Date(workoutDates[0].getFullYear(), workoutDates[0].getMonth(), workoutDates[0].getDate());
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    yesterday.setHours(0, 0, 0, 0);
+
+                    if (lastWorkoutDate.getTime() !== today.getTime() && lastWorkoutDate.getTime() !== yesterday.getTime()) {
+                        streak = 0; // Reset streak if the last workout wasn't yesterday or today
+                        message = 'No active streak. Complete a workout to start!';
+                    }
+                }
+            }
+
+            return { streak, message };
+        }
+
+        // Update streak display
+        function updateStreakDisplay() {
+            const { streak, message } = calculateStreak();
+            currentStreak_el.textContent = `${streak} days`;
+            streakMessage_el.textContent = message;
+        }
+
+        // Update timer function
         function updateTimer() {
             if (!sessionStartTime) return;
             
@@ -792,8 +918,8 @@
             
             totalTime = elapsedTime;
             
-            // Calculate phase time - don't subtract totalPausedTime here since phaseStartTime is already adjusted
-            const phaseElapsed = Math.floor((currentTime - phaseStartTime) / 1000);
+            // Calculate phase time
+            const phaseElapsed = Math.floor((currentTime - phaseStartTime - totalPausedTime) / 1000);
             phaseTime = phaseElapsed;
             
             // Check for phase change
@@ -806,7 +932,7 @@
                 const nextPhaseData = phases.find(p => p.id === nextPhase);
                 
                 currentPhase = nextPhase;
-                phaseStartTime = currentTime; // Reset phase start time to current time
+                phaseStartTime = currentTime;
                 phaseTime = 0;
                 
                 // Announce the next phase
@@ -828,6 +954,7 @@
                 };
                 workoutLog.unshift(completedWorkout);
                 saveWorkoutLog();
+                addWorkoutDate(new Date()); // Add today's date to streak tracker
                 
                 playBeep(1200, 500);
                 isRunning = false;
@@ -837,6 +964,7 @@
             }
             
             updateUI();
+            updateStreakDisplay(); // Update streak display on every timer tick
             
             // Auto-save session state every 10 seconds while running
             if (isRunning && (Date.now() - (window.lastAutoSave || 0)) > 10000) {
@@ -910,7 +1038,7 @@
             timerInterval = setInterval(updateTimer, 100);
         }
 
-        // Handle start/pause button - FIXED VERSION
+        // Handle start/pause button
         function handleStart() {
             if (!isRunning) {
                 if (!sessionStartTime) {
@@ -932,3 +1060,201 @@
                     }, 200);
                     
                     completionBanner.style.display = 'none';
+                } else if (sessionPauseTime) {
+                    // Resume from pause
+                    const now = Date.now();
+                    totalPausedTime += now - sessionPauseTime;
+                    sessionPauseTime = null;
+                }
+                
+                isRunning = true;
+                startTimer();
+            } else {
+                // Pause
+                isRunning = false;
+                sessionPauseTime = Date.now();
+                clearInterval(timerInterval);
+                playBeep(400, 150);
+            }
+            
+            updateUI();
+        }
+
+        // Handle reset button
+        function handleReset() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            sessionStartTime = null;
+            sessionPauseTime = null;
+            totalPausedTime = 0;
+            phaseStartTime = null;
+            currentPhase = 1;
+            phaseTime = 0;
+            totalTime = 0;
+            clearActiveSession();
+            playBeep(300, 100);
+            
+            completionBanner.style.display = 'none';
+            pauseBanner.style.display = 'none';
+            
+            updateUI();
+            updateStreakDisplay(); // Update streak display after reset
+        }
+
+        // Handle sound toggle
+        function handleSoundToggle() {
+            soundEnabled = !soundEnabled;
+            
+            if (soundEnabled) {
+                soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+                soundBtn.className = 'btn btn-icon btn-blue';
+            } else {
+                soundIcon.innerHTML = '<path d="m9 9 3 3m0-3-3 3m-6-6v6h4l5 4V5L7 9H1Z"/><path d="m15 9 6 6m0-6-6 6"/>';
+                soundBtn.className = 'btn btn-icon btn-secondary';
+            }
+            
+            // Save setting
+            safeSetItem('am1SoundEnabled', soundEnabled.toString());
+        }
+
+        // Handle log toggle
+        function handleLogToggle() {
+            if (logSection.classList.contains('show')) {
+                logSection.classList.remove('show');
+            } else {
+                logSection.classList.add('show');
+                updateLogDisplay();
+            }
+        }
+
+        // Update log display
+        function updateLogDisplay() {
+            logCount.textContent = `${workoutLog.length} sessions`;
+            
+            if (workoutLog.length === 0) {
+                logEmpty.style.display = 'block';
+                logItems.style.display = 'none';
+            } else {
+                logEmpty.style.display = 'none';
+                logItems.style.display = 'block';
+                
+                logItems.innerHTML = '';
+                workoutLog.forEach((workout, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'log-item';
+                    item.innerHTML = `
+                        <div class="log-item-left">
+                            <div class="log-item-date">${workout.date}</div>
+                            <div class="log-item-time">${workout.time}</div>
+                        </div>
+                        <div class="log-item-right">
+                            <div class="log-item-status">✓ Completed</div>
+                            <div class="log-item-duration">${workout.duration}</div>
+                        </div>
+                    `;
+                    logItems.appendChild(item);
+                });
+            }
+        }
+
+        // Save workout log
+        function saveWorkoutLog() {
+            safeSetItem('am1WorkoutLog', JSON.stringify(workoutLog));
+        }
+
+        // Load workout log
+        function loadWorkoutLog() {
+            const savedLog = safeGetItem('am1WorkoutLog');
+            if (savedLog) {
+                try {
+                    workoutLog = JSON.parse(savedLog);
+                } catch (e) {
+                    workoutLog = [];
+                }
+            }
+        }
+
+        // Update schedule status
+        function updateScheduleStatus() {
+            let status, message, className;
+            
+            if (workoutLog.length === 0) {
+                status = '💪 Workout Day';
+                message = 'Ready to start your first workout!';
+                className = 'workout';
+            } else {
+                const lastWorkout = workoutLog[0];
+                const lastWorkoutDate = new Date(lastWorkout.date);
+                const today = new Date();
+                today.setHours(0,0,0,0); // Normalize today's date
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                const isToday = lastWorkoutDate.toDateString() === today.toDateString();
+                const isYesterday = lastWorkoutDate.toDateString() === yesterday.toDateString();
+                
+                if (isToday) {
+                    status = '😴 Rest Day';
+                    message = 'Rest day! You worked out today.';
+                    className = 'rest';
+                } else if (isYesterday) {
+                    status = '💪 Workout Day';
+                    message = 'Workout day! Ready for your next session.';
+                    className = 'workout';
+                } else {
+                    status = '💪 Workout Day';
+                    message = 'Time to get back to your routine!';
+                    className = 'workout';
+                }
+            }
+            
+            scheduleStatus.querySelector('.schedule-title').textContent = status;
+            scheduleStatus.querySelector('.schedule-message').textContent = message;
+            scheduleStatus.className = `schedule-status ${className}`;
+        }
+
+        // Handle page visibility changes for accurate timing
+        function handleVisibilityChange() {
+            if (isRunning && !document.hidden) {
+                // Page became visible again - update timer immediately
+                updateTimer();
+            }
+        }
+
+        // Load saved settings
+        function loadSettings() {
+            const savedSound = safeGetItem('am1SoundEnabled');
+            if (savedSound !== null) {
+                soundEnabled = savedSound === 'true';
+                handleSoundToggle();
+                // Toggle twice to get the right state (since handleSoundToggle flips it)
+                soundEnabled = !soundEnabled;
+                handleSoundToggle();
+            }
+        }
+
+        // Initialize app
+        function init() {
+            loadSettings();
+            loadWorkoutLog();
+            loadWorkoutDates(); // Load workout dates for streak
+            updateUI();
+            updateScheduleStatus();
+            updateStreakDisplay(); // Initial update of streak display
+            
+            // Try to restore active session
+            restoreActiveSession();
+            
+            // Event listeners
+            startBtn.addEventListener('click', handleStart);
+            resetBtn.addEventListener('click', handleReset);
+            soundBtn.addEventListener('click', handleSoundToggle);
+            logBtn.addEventListener('click', handleLogToggle);
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+        }
+
+        // Start the app when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
