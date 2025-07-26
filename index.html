@@ -833,6 +833,7 @@
         let soundEnabled = true;
         let workoutLog = [];
         let currentCalendarDate = new Date();
+        let wakeLock = null;
 
         // Phases configuration
         const phases = [
@@ -874,6 +875,41 @@
         const prevMonth = document.getElementById('prevMonth');
         const nextMonth = document.getElementById('nextMonth');
         const calendarGrid = document.getElementById('calendarGrid');
+
+        // Screen Wake Lock functions
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Screen wake lock activated');
+                    
+                    wakeLock.addEventListener('release', () => {
+                        console.log('Screen wake lock released');
+                    });
+                }
+            } catch (err) {
+                console.log('Wake lock request failed:', err);
+            }
+        }
+
+        async function releaseWakeLock() {
+            if (wakeLock !== null) {
+                try {
+                    await wakeLock.release();
+                    wakeLock = null;
+                    console.log('Screen wake lock released manually');
+                } catch (err) {
+                    console.log('Wake lock release failed:', err);
+                }
+            }
+        }
+
+        // Handle visibility change to re-request wake lock if needed
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible' && isRunning) {
+                await requestWakeLock();
+            }
+        });
 
         // Audio context for beeps
         let audioContext = null;
@@ -1228,6 +1264,7 @@
                 
                 playBeep(1200, 500);
                 isRunning = false;
+                releaseWakeLock(); // Release wake lock when workout completes
                 
                 completionBanner.style.display = 'block';
                 updateCalendar(); // Update calendar to show new completion
@@ -1331,12 +1368,14 @@
                 }
                 
                 isRunning = true;
+                requestWakeLock(); // Keep screen on during workout
                 startTimer();
             } else {
                 // Pause
                 isRunning = false;
                 sessionPauseTime = Date.now();
                 clearInterval(timerInterval);
+                releaseWakeLock(); // Allow screen to turn off when paused
                 playBeep(400, 150);
             }
             
@@ -1355,6 +1394,8 @@
             phaseTime = 0;
             totalTime = 0;
             playBeep(300, 100);
+            
+            releaseWakeLock(); // Release wake lock when resetting
             
             completionBanner.style.display = 'none';
             pauseBanner.style.display = 'none';
@@ -1723,7 +1764,6 @@
             updateScheduleStatus();
             generateCalendar();
             
-            // Event listeners
             startBtn.addEventListener('click', handleStart);
             resetBtn.addEventListener('click', handleReset);
             soundBtn.addEventListener('click', handleSoundToggle);
