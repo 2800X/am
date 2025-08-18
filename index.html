@@ -3,8 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AM1 Workout Timer</title>
+    <title>AM1 Elite Workout Timer</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            --warning-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            --danger-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            --dark-gradient: linear-gradient(135deg, #232526 0%, #414345 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-medium: 0 15px 35px rgba(31, 38, 135, 0.5);
+            --shadow-heavy: 0 25px 50px rgba(31, 38, 135, 0.7);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,300 +30,287 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #111827;
-            color: white;
-            padding: 1.5rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         .container {
-            max-width: 28rem;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            gap: 2rem;
+            min-height: 100vh;
+            align-content: start;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
         }
 
         .header {
             text-align: center;
+            margin-bottom: 1rem;
         }
 
         .header h1 {
-            font-size: 2.25rem;
-            font-weight: bold;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #a8edea 50%, #fed6e3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2); }
         }
 
         .header p {
-            color: #9CA3AF;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
         }
 
-        .schedule-status {
-            border-radius: 0.5rem;
-            padding: 1rem;
-            border: 2px solid;
+        .status-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
             text-align: center;
-        }
-
-        .schedule-status.workout {
-            background-color: #064E3B;
-            border-color: #10B981;
-        }
-
-        .schedule-status.rest {
-            background-color: #92400E;
-            border-color: #F59E0B;
-        }
-
-        .schedule-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .schedule-message {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .calendar-section, .log-section, .backup-section {
-            background-color: #374151;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            display: none;
-        }
-
-        .calendar-section.show, .log-section.show, .backup-section.show {
-            display: block;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .calendar-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .calendar-nav {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .calendar-nav-btn {
-            background: none;
-            border: none;
-            color: #9CA3AF;
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 0.25rem;
-            font-size: 1.25rem;
-            transition: color 0.2s;
-        }
-
-        .calendar-nav-btn:hover {
-            color: white;
-            background-color: #4B5563;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 0.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .calendar-day-header {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #9CA3AF;
-            padding: 0.5rem 0;
-            font-weight: 600;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-size: 0.875rem;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
             position: relative;
-            transition: all 0.2s;
-            background-color: #4B5563;
-            min-height: 40px;
+            overflow: hidden;
         }
 
-        .calendar-day:hover:not(.other-month) {
-            background-color: #6B7280;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .calendar-day.other-month {
-            color: #6B7280;
-            background-color: #374151;
-        }
-
-        .calendar-day.today {
-            background-color: #1E40AF;
-            color: white;
-            font-weight: bold;
-        }
-
-        .calendar-day.completed {
-            background-color: #059669;
-            color: white;
-            font-weight: bold;
-            position: relative;
-        }
-
-        .calendar-day.completed::after {
-            content: '✓';
+        .status-card::before {
+            content: '';
             position: absolute;
-            top: 2px;
-            right: 2px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #A7F3D0;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
         }
 
-        .calendar-day.rest {
-            background-color: #374151;
-            color: #9CA3AF;
-            border: 1px dashed #6B7280;
+        .status-card:hover::before {
+            left: 100%;
         }
 
-        .calendar-legend {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+        .status-card.workout {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.75rem;
-        }
-
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .legend-dot.workout {
-            background-color: #059669;
-        }
-
-        .legend-dot.rest {
-            background-color: #374151;
-            border: 1px dashed #6B7280;
-        }
-
-        .legend-dot.today {
-            background-color: #1E40AF;
+        .status-card.rest {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
         }
 
         .phase-display {
-            border-radius: 1rem;
-            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border-radius: 32px;
+            padding: 3rem 2rem;
             text-align: center;
-            transition: background-color 0.5s;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 2px solid var(--glass-border);
+        }
+
+        .phase-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 8s linear infinite;
+            border-radius: inherit;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .phase-display-content {
+            position: relative;
+            z-index: 2;
         }
 
         .phase-display.slow {
-            background-color: #3B82F6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.3) 100%);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
         }
 
         .phase-display.normal {
-            background-color: #10B981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.3) 100%);
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
         }
 
         .phase-display.fast {
-            background-color: #EF4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.3) 100%);
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
         }
 
         .phase-name {
-            font-size: 3.75rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.05em;
+            animation: phaseGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes phaseGlow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
         }
 
         .phase-info {
-            font-size: 1.5rem;
-            opacity: 0.9;
-            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
         }
 
         .phase-time {
-            font-size: 1.875rem;
-            font-family: monospace;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-family: 'Inter', monospace;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .progress-bar {
-            background-color: #374151;
-            border-radius: 9999px;
-            height: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            height: 12px;
             overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .progress-fill {
             height: 100%;
-            transition: width 1s ease-linear;
+            border-radius: inherit;
+            transition: width 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .progress-fill.slow {
-            background-color: #3B82F6;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
         }
 
         .progress-fill.normal {
-            background-color: #10B981;
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
         }
 
         .progress-fill.fast {
-            background-color: #EF4444;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
         }
 
         .workout-progress {
-            background-color: #374151;
-            border-radius: 0.5rem;
-            padding: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
         }
 
         .workout-progress-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .workout-progress-header span {
-            font-size: 0.875rem;
-            color: #9CA3AF;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         .workout-progress-bar {
-            background-color: #4B5563;
-            border-radius: 9999px;
-            height: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            height: 8px;
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .workout-progress-fill {
             height: 100%;
-            background-color: white;
-            transition: width 1s ease-linear;
+            background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
+            border-radius: inherit;
+            transition: width 1s ease;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
 
         .controls {
@@ -316,255 +321,101 @@
         }
 
         .btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
             padding: 1rem 2rem;
-            border-radius: 9999px;
-            border: none;
-            font-size: 1.125rem;
+            font-size: 1.1rem;
             font-weight: 600;
+            color: var(--text-primary);
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
         }
 
         .btn:disabled {
-            background-color: #4B5563 !important;
+            opacity: 0.5;
             cursor: not-allowed;
-            opacity: 0.6;
+            transform: none !important;
         }
 
         .btn-primary {
-            background-color: #059669;
-            color: white;
+            background: var(--success-gradient);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-primary:hover:not(:disabled) {
-            background-color: #047857;
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
         }
 
         .btn-warning {
-            background-color: #D97706;
-            color: white;
-        }
-
-        .btn-warning:hover:not(:disabled) {
-            background-color: #B45309;
+            background: var(--warning-gradient);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #1f2937;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
         }
 
         .btn-secondary {
-            background-color: #4B5563;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #374151;
+            background: var(--dark-gradient);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .btn-blue {
-            background-color: #2563EB;
-            color: white;
-        }
-
-        .btn-blue:hover {
-            background-color: #1D4ED8;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
 
         .btn-purple {
-            background-color: #7C3AED;
-            color: white;
-        }
-
-        .btn-purple:hover {
-            background-color: #6D28D9;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
         .btn-green {
-            background-color: #059669;
-            color: white;
-        }
-
-        .btn-green:hover {
-            background-color: #047857;
+            background: var(--success-gradient);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
 
         .btn-icon {
             padding: 1rem;
-            width: auto;
-        }
-
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .log-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .log-count {
-            font-size: 0.875rem;
-            color: #9CA3AF;
-        }
-
-        .log-empty {
-            text-align: center;
-            color: #9CA3AF;
-            padding: 1rem 0;
-        }
-
-        .log-items {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 12rem;
-            overflow-y: auto;
-        }
-
-        .log-item {
-            background-color: #4B5563;
-            border-radius: 0.25rem;
-            padding: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .log-item-left {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .log-item-date {
-            font-weight: 500;
-        }
-
-        .log-item-time {
-            font-size: 0.875rem;
-            color: #9CA3AF;
-        }
-
-        .log-item-right {
-            text-align: right;
-        }
-
-        .log-item-status {
-            color: #10B981;
-            font-weight: 500;
-        }
-
-        .log-item-duration {
-            font-size: 0.875rem;
-            color: #9CA3AF;
-        }
-
-        .phase-schedule {
-            background-color: #374151;
-            border-radius: 0.5rem;
-            padding: 1rem;
-        }
-
-        .schedule-title-small {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #D1D5DB;
-            margin-bottom: 0.75rem;
-        }
-
-        .schedule-items {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .schedule-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .schedule-item-left {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .schedule-dot {
-            width: 0.75rem;
-            height: 0.75rem;
             border-radius: 50%;
-        }
-
-        .schedule-dot.slow {
-            background-color: #3B82F6;
-        }
-
-        .schedule-dot.normal {
-            background-color: #10B981;
-        }
-
-        .schedule-dot.fast {
-            background-color: #EF4444;
-        }
-
-        .schedule-item-name {
-            font-size: 0.875rem;
-        }
-
-        .schedule-item-name.active {
-            color: white;
-            font-weight: 600;
-        }
-
-        .schedule-item-name.inactive {
-            color: #9CA3AF;
-        }
-
-        .schedule-item-time {
-            font-size: 0.875rem;
-            color: #9CA3AF;
-        }
-
-        .completion-banner {
-            background-color: #064E3B;
-            border: 2px solid #10B981;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .completion-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #A7F3D0;
-            margin-bottom: 0.5rem;
-        }
-
-        .completion-message {
-            color: #D1FAE5;
-        }
-
-        .pause-banner {
-            background-color: #1E3A8A;
-            border: 2px solid #3B82F6;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .pause-title {
-            font-size: 1.125rem;
-            font-weight: bold;
-            color: #BFDBFE;
-            margin-bottom: 0.5rem;
-        }
-
-        .pause-message {
-            color: #DBEAFE;
-            font-size: 0.875rem;
+            width: 60px;
+            height: 60px;
+            justify-content: center;
         }
 
         .icon {
@@ -573,186 +424,433 @@
             fill: currentColor;
         }
 
-        @media (max-width: 640px) {
-            .phase-name {
-                font-size: 3rem;
+        .expandable-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .expandable-section.show {
+            max-height: 1000px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+
+        .calendar-day:hover:not(.other-month) {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .calendar-day.completed {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .calendar-day.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        .calendar-day.rest {
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px dashed rgba(245, 158, 11, 0.5);
+            color: var(--text-secondary);
+        }
+
+        .phase-schedule {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .schedule-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .schedule-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .schedule-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .schedule-dot.slow { background: #3b82f6; }
+        .schedule-dot.normal { background: #10b981; }
+        .schedule-dot.fast { background: #ef4444; }
+
+        .completion-banner {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.3) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(16, 185, 129, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            animation: completionPulse 2s ease-in-out infinite alternate;
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes completionPulse {
+            from { box-shadow: 0 0 40px rgba(16, 185, 129, 0.4); }
+            to { box-shadow: 0 0 60px rgba(16, 185, 129, 0.6); }
+        }
+
+        .completion-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pause-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.3) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                gap: 1.5rem;
             }
-            
+
+            .glass-card {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+
+            .phase-display {
+                padding: 2rem 1.5rem;
+                border-radius: 20px;
+            }
+
+            .controls {
+                gap: 0.75rem;
+            }
+
             .btn {
-                padding: 0.75rem 1.5rem;
+                padding: 0.875rem 1.5rem;
                 font-size: 1rem;
             }
-            
+
             .btn-icon {
+                width: 50px;
+                height: 50px;
                 padding: 0.75rem;
             }
 
             .calendar-grid {
-                gap: 0.125rem;
+                gap: 0.25rem;
             }
 
             .calendar-day {
-                font-size: 0.75rem;
-                min-height: 35px;
-            }
-
-            .legend-item {
-                font-size: 0.6875rem;
+                font-size: 0.8rem;
             }
         }
+
+        /* Enhanced Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-card {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .glass-card:nth-child(2) { animation-delay: 0.1s; }
+        .glass-card:nth-child(3) { animation-delay: 0.2s; }
+        .glass-card:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
+    <!-- Floating Particles Background -->
+    <div class="floating-particles" id="particles"></div>
+
     <div class="container">
         <!-- Header -->
-        <div class="header">
+        <div class="glass-card header">
             <h1>AM1</h1>
-            <p>3-Phase Workout Timer</p>
+            <p>Elite 3-Phase Workout Timer</p>
         </div>
 
         <!-- Schedule Status -->
-        <div id="scheduleStatus" class="schedule-status workout">
-            <div class="schedule-title">💪 Workout Day</div>
-            <p class="schedule-message">Ready to start your first workout!</p>
+        <div id="scheduleStatus" class="status-card workout">
+            <div class="schedule-title" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">💪 Workout Day</div>
+            <p class="schedule-message" style="color: var(--text-secondary);">Ready to start your first workout!</p>
         </div>
 
         <!-- Current Phase Display -->
         <div id="phaseDisplay" class="phase-display slow">
-            <div class="phase-name">SLOW</div>
-            <div class="phase-info">Phase 1 of 3</div>
-            <div id="phaseTime" class="phase-time">01:00</div>
-        </div>
-
-        <!-- Phase Progress Bar -->
-        <div class="progress-bar">
-            <div id="phaseProgress" class="progress-fill slow" style="width: 0%"></div>
-        </div>
-
-        <!-- Total Workout Progress -->
-        <div class="workout-progress">
-            <div class="workout-progress-header">
-                <span>Total Workout</span>
-                <span id="remainingTime">15:00 remaining</span>
+            <div class="phase-display-content">
+                <div class="phase-name">SLOW</div>
+                <div class="phase-info">Phase 1 of 3</div>
+                <div id="phaseTime" class="phase-time">01:00</div>
             </div>
-            <div class="workout-progress-bar">
-                <div id="totalProgress" class="workout-progress-fill" style="width: 0%"></div>
+        </div>
+
+        <!-- Progress Bars -->
+        <div class="glass-card progress-container">
+            <div class="progress-bar">
+                <div id="phaseProgress" class="progress-fill slow" style="width: 0%"></div>
+            </div>
+
+            <div class="workout-progress">
+                <div class="workout-progress-header">
+                    <span>Total Workout Progress</span>
+                    <span id="remainingTime">20:00 remaining</span>
+                </div>
+                <div class="workout-progress-bar">
+                    <div id="totalProgress" class="workout-progress-fill" style="width: 0%"></div>
+                </div>
             </div>
         </div>
 
         <!-- Controls -->
-        <div class="controls">
-            <button id="startBtn" class="btn btn-primary">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                Start
-            </button>
-            
-            <button id="resetBtn" class="btn btn-secondary">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                Reset
-            </button>
+        <div class="glass-card">
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    Start
+                </button>
+                
+                <button id="resetBtn" class="btn btn-secondary">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Reset
+                </button>
 
-            <button id="soundBtn" class="btn btn-icon btn-blue">
-                <svg id="soundIcon" class="icon" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-            </button>
+                <button id="soundBtn" class="btn btn-icon btn-blue">
+                    <svg id="soundIcon" class="icon" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </button>
 
-            <button id="calendarBtn" class="btn btn-icon btn-green">
-                📅
-            </button>
+                <button id="calendarBtn" class="btn btn-icon btn-green" title="Calendar">
+                    📅
+                </button>
 
-            <button id="logBtn" class="btn btn-icon btn-purple">
-                📊
-            </button>
+                <button id="logBtn" class="btn btn-icon btn-purple" title="Workout Log">
+                    📊
+                </button>
 
-            <button id="backupBtn" class="btn btn-icon btn-secondary" title="Backup & Import Data">
-                💾
-            </button>
+                <button id="backupBtn" class="btn btn-icon btn-secondary" title="Backup & Import">
+                    💾
+                </button>
+            </div>
         </div>
 
         <!-- Calendar Section -->
-        <div id="calendarSection" class="calendar-section">
-            <div class="calendar-header">
-                <h3 class="calendar-title" id="calendarTitle">January 2025</h3>
-                <div class="calendar-nav">
-                    <button id="prevMonth" class="calendar-nav-btn">‹</button>
-                    <button id="nextMonth" class="calendar-nav-btn">›</button>
+        <div id="calendarSection" class="expandable-section">
+            <div class="glass-card">
+                <div class="section-header">
+                    <h3 class="section-title" id="calendarTitle">January 2025</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="prevMonth" class="btn btn-secondary" style="padding: 0.5rem 1rem;">‹</button>
+                        <button id="nextMonth" class="btn btn-secondary" style="padding: 0.5rem 1rem;">›</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="calendar-grid" id="calendarGrid">
-                <!-- Calendar will be generated here -->
-            </div>
+                
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated here -->
+                </div>
 
-            <div class="calendar-legend">
-                <div class="legend-item">
-                    <div class="legend-dot workout"></div>
-                    <span>Completed</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-dot rest"></div>
-                    <span>Rest/Missed</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-dot today"></div>
-                    <span>Today</span>
-                </div>
-                <div class="legend-item">
-                    <span style="font-size: 0.6rem; color: #9CA3AF;">Click days to edit</span>
+                <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; font-size: 0.8rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #047857 100%);"></div>
+                        <span>Completed</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(245, 158, 11, 0.2); border: 2px dashed rgba(245, 158, 11, 0.5);"></div>
+                        <span>Rest/Missed</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);"></div>
+                        <span>Today</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Workout Log -->
-        <div id="logSection" class="log-section">
-            <div class="log-header">
-                <h3 class="log-title">Workout Log</h3>
-                <span id="logCount" class="log-count">0 sessions</span>
-            </div>
-            
-            <div id="logEmpty" class="log-empty">
-                No workouts completed yet. Start your first session!
-            </div>
-            
-            <div id="logItems" class="log-items" style="display: none;">
-                <!-- Log items will be inserted here -->
+        <div id="logSection" class="expandable-section">
+            <div class="glass-card">
+                <div class="section-header">
+                    <h3 class="section-title">Workout Log</h3>
+                    <span id="logCount" style="color: var(--text-muted); font-size: 0.9rem;">0 sessions</span>
+                </div>
+                
+                <div id="logEmpty" style="text-align: center; color: var(--text-muted); padding: 2rem 0;">
+                    No workouts completed yet. Start your first session!
+                </div>
+                
+                <div id="logItems" style="display: none; flex-direction: column; gap: 1rem; max-height: 300px; overflow-y: auto;">
+                    <!-- Log items will be inserted here -->
+                </div>
             </div>
         </div>
 
         <!-- Backup/Import Section -->
-        <div id="backupSection" class="backup-section">
-            <div class="log-header">
-                <h3 class="log-title">Backup & Import</h3>
-                <span class="log-count">Data Management</span>
-            </div>
-            
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button id="exportBtn" class="btn btn-secondary" style="flex: 1; min-width: 120px;">
-                        📤 Export Data
-                    </button>
-                    <button id="importBtn" class="btn btn-secondary" style="flex: 1; min-width: 120px;">
-                        📥 Import Data
-                    </button>
+        <div id="backupSection" class="expandable-section">
+            <div class="glass-card">
+                <div class="section-header">
+                    <h3 class="section-title">Data Management</h3>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">Backup & Import</span>
                 </div>
                 
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button id="clearDataBtn" class="btn btn-warning" style="flex: 1; min-width: 120px;">
-                        🗑️ Clear All Data
-                    </button>
-                    <button id="downloadJsonBtn" class="btn btn-blue" style="flex: 1; min-width: 120px;">
-                        📋 Download JSON
-                    </button>
-                </div>
-                
-                <input type="file" id="importFileInput" accept=".json,.txt" style="display: none;">
-                
-                <div id="backupStatus" style="padding: 0.75rem; border-radius: 0.25rem; font-size: 0.875rem; display: none;">
-                    <!-- Status messages will appear here -->
-                </div>
-                
-                <div style="background-color: #4B5563; border-radius: 0.25rem; padding: 0.75rem;">
-                    <div style="font-size: 0.75rem; color: #9CA3AF; margin-bottom: 0.5rem;">Data Summary:</div>
-                    <div id="dataSummary" style="font-size: 0.875rem;">
-                        Loading...
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button id="exportBtn" class="btn btn-blue">
+                            📤 Export Data
+                        </button>
+                        <button id="importBtn" class="btn btn-green">
+                            📥 Import Data
+                        </button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button id="clearDataBtn" class="btn btn-warning">
+                            🗑️ Clear All
+                        </button>
+                        <button id="downloadJsonBtn" class="btn btn-purple">
+                            📋 Download JSON
+                        </button>
+                    </div>
+                    
+                    <input type="file" id="importFileInput" accept=".json,.txt" style="display: none;">
+                    
+                    <div id="backupStatus" style="padding: 1rem; border-radius: 12px; font-size: 0.9rem; display: none; backdrop-filter: blur(10px);">
+                        <!-- Status messages will appear here -->
+                    </div>
+                    
+                    <div style="background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 12px; padding: 1rem; border: 1px solid var(--glass-border);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;">Data Summary:</div>
+                        <div id="dataSummary" style="font-size: 0.9rem; line-height: 1.5;">
+                            Loading...
+                        </div>
                     </div>
                 </div>
             </div>
@@ -760,28 +858,30 @@
 
         <!-- Phase Schedule -->
         <div class="phase-schedule">
-            <h3 class="schedule-title-small">Phase Schedule</h3>
+            <div class="section-header">
+                <h3 class="section-title">Phase Schedule</h3>
+            </div>
             <div class="schedule-items">
-                <div class="schedule-item">
-                    <div class="schedule-item-left">
+                <div class="schedule-item active" id="slowSchedule">
+                    <div style="display: flex; align-items: center;">
                         <div class="schedule-dot slow"></div>
-                        <span id="slowLabel" class="schedule-item-name active">SLOW</span>
+                        <span id="slowLabel" style="font-weight: 600;">SLOW</span>
                     </div>
-                    <span class="schedule-item-time">01:00</span>
+                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
                 </div>
-                <div class="schedule-item">
-                    <div class="schedule-item-left">
+                <div class="schedule-item" id="normalSchedule">
+                    <div style="display: flex; align-items: center;">
                         <div class="schedule-dot normal"></div>
-                        <span id="normalLabel" class="schedule-item-name inactive">NORMAL</span>
+                        <span id="normalLabel" style="color: var(--text-muted);">NORMAL</span>
                     </div>
-                    <span class="schedule-item-time">01:00</span>
+                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
                 </div>
-                <div class="schedule-item">
-                    <div class="schedule-item-left">
+                <div class="schedule-item" id="fastSchedule">
+                    <div style="display: flex; align-items: center;">
                         <div class="schedule-dot fast"></div>
-                        <span id="fastLabel" class="schedule-item-name inactive">FAST</span>
+                        <span id="fastLabel" style="color: var(--text-muted);">FAST</span>
                     </div>
-                    <span class="schedule-item-time">01:00</span>
+                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
                 </div>
             </div>
         </div>
@@ -789,17 +889,42 @@
         <!-- Completion Banner -->
         <div id="completionBanner" class="completion-banner" style="display: none;">
             <div class="completion-title">🎉 Workout Complete!</div>
-            <p class="completion-message">Great job finishing your 15-minute AM1 session!</p>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Outstanding work finishing your 20-minute AM1 session!</p>
         </div>
 
         <!-- Pause Banner -->
         <div id="pauseBanner" class="pause-banner" style="display: none;">
-            <div class="pause-title">⏸️ Session Paused</div>
-            <p class="pause-message">Your workout will resume from where you left off when you hit Resume!</p>
+            <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">⏸️ Session Paused</div>
+            <p style="color: var(--text-secondary);">Your workout will resume exactly where you left off when you hit Resume!</p>
         </div>
     </div>
 
     <script>
+        // Floating particles animation
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 1;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 10 + 10;
+                const animationDelay = Math.random() * 15;
+                
+                particle.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    animation-duration: ${animationDuration}s;
+                    animation-delay: ${animationDelay}s;
+                `;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
         // Safe storage wrapper with fallback
         let tempStorage = {};
         
@@ -821,7 +946,7 @@
 
         // Timer variables
         let timerInterval;
-        let sessionDuration = 15 * 60 * 1000; // 15 minutes in milliseconds
+        let sessionDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
         let sessionStartTime = null;
         let sessionPauseTime = null;
         let totalPausedTime = 0;
@@ -914,8 +1039,8 @@
         // Audio context for beeps
         let audioContext = null;
 
-        // Sound function
-        function playBeep(frequency = 800, duration = 200) {
+        // Enhanced sound function with multiple tones
+        function playBeep(frequency = 800, duration = 200, type = 'phase') {
             if (!soundEnabled) return;
             
             try {
@@ -929,8 +1054,16 @@
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                oscillator.frequency.value = frequency;
-                oscillator.type = 'sine';
+                if (type === 'completion') {
+                    // Special completion sound
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
+                } else {
+                    oscillator.frequency.value = frequency;
+                }
+                
+                oscillator.type = type === 'completion' ? 'triangle' : 'sine';
                 
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
@@ -942,7 +1075,7 @@
             }
         }
 
-        // Voice announcement function
+        // Enhanced voice announcement function
         function speakPhase(phaseName) {
             if (!soundEnabled) return;
             
@@ -952,6 +1085,13 @@
                 utterance.rate = 1.2;
                 utterance.volume = 0.8;
                 utterance.pitch = 1.0;
+                
+                // Add emphasis for phase changes
+                if (phaseName === 'FAST') {
+                    utterance.rate = 1.4;
+                    utterance.pitch = 1.2;
+                }
+                
                 window.speechSynthesis.speak(utterance);
             } catch (error) {
                 console.log('Speech synthesis not available');
@@ -1021,19 +1161,6 @@
             if (date <= new Date()) {
                 dayElement.style.cursor = 'pointer';
                 dayElement.addEventListener('click', () => handleCalendarDayClick(date, dayElement));
-                
-                // Add hover effect
-                dayElement.addEventListener('mouseenter', () => {
-                    if (!dayElement.classList.contains('other-month')) {
-                        dayElement.style.transform = 'scale(1.1)';
-                        dayElement.style.zIndex = '10';
-                    }
-                });
-                
-                dayElement.addEventListener('mouseleave', () => {
-                    dayElement.style.transform = 'scale(1)';
-                    dayElement.style.zIndex = '1';
-                });
             }
             
             return dayElement;
@@ -1167,7 +1294,7 @@
             }
         }
         
-        // Show visual feedback when editing calendar
+        // Enhanced visual feedback when editing calendar
         function showEditFeedback(dayElement, icon, color) {
             const feedback = document.createElement('div');
             feedback.textContent = icon;
@@ -1176,11 +1303,12 @@
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%) scale(0);
-                font-size: 1.5rem;
+                font-size: 1.8rem;
                 color: ${color};
                 pointer-events: none;
                 z-index: 1000;
-                animation: feedbackPop 0.6s ease-out forwards;
+                text-shadow: 0 0 10px ${color};
+                animation: feedbackPop 0.8s ease-out forwards;
             `;
             
             // Add animation keyframes if not already added
@@ -1190,8 +1318,8 @@
                 style.textContent = `
                     @keyframes feedbackPop {
                         0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-                        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-                        100% { transform: translate(-50%, -50%) scale(1) translateY(-20px); opacity: 0; }
+                        50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+                        100% { transform: translate(-50%, -50%) scale(1) translateY(-30px); opacity: 0; }
                     }
                 `;
                 document.head.appendChild(style);
@@ -1205,7 +1333,7 @@
                 if (feedback.parentNode) {
                     feedback.parentNode.removeChild(feedback);
                 }
-            }, 600);
+            }, 800);
         }
 
         // Format time helper
@@ -1252,7 +1380,7 @@
             if (remainingTime_calc <= 0) {
                 clearInterval(timerInterval);
                 
-                // Workout complete - log it and play sound
+                // Workout complete - log it and play special completion sound
                 const completedWorkout = {
                     date: new Date().toISOString(),
                     time: new Date().toLocaleTimeString(),
@@ -1262,15 +1390,59 @@
                 workoutLog.unshift(completedWorkout);
                 saveWorkoutLog();
                 
-                playBeep(1200, 500);
+                playBeep(1200, 500, 'completion');
                 isRunning = false;
                 releaseWakeLock(); // Release wake lock when workout completes
                 
                 completionBanner.style.display = 'block';
                 updateCalendar(); // Update calendar to show new completion
+                
+                // Celebrate with confetti effect
+                createConfetti();
             }
             
             updateUI();
+        }
+
+        // Confetti celebration effect
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    top: -10px;
+                    left: ${Math.random() * 100}%;
+                    width: ${Math.random() * 6 + 4}px;
+                    height: ${Math.random() * 6 + 4}px;
+                    background: ${['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7'][Math.floor(Math.random() * 5)]};
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 10000;
+                    animation: confettiFall ${Math.random() * 2 + 2}s linear forwards;
+                `;
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 4000);
+            }
+            
+            // Add confetti animation if not exists
+            if (!document.getElementById('confettiAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'confettiAnimation';
+                style.textContent = `
+                    @keyframes confettiFall {
+                        to {
+                            transform: translateY(calc(100vh + 20px)) rotate(720deg);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
         }
 
         // Update UI function
@@ -1317,9 +1489,17 @@
             startBtn.disabled = isWorkoutComplete;
             
             // Update phase schedule highlighting
-            document.getElementById('slowLabel').className = `schedule-item-name ${currentPhase === 1 ? 'active' : 'inactive'}`;
-            document.getElementById('normalLabel').className = `schedule-item-name ${currentPhase === 2 ? 'active' : 'inactive'}`;
-            document.getElementById('fastLabel').className = `schedule-item-name ${currentPhase === 3 ? 'active' : 'inactive'}`;
+            document.getElementById('slowSchedule').classList.toggle('active', currentPhase === 1);
+            document.getElementById('normalSchedule').classList.toggle('active', currentPhase === 2);
+            document.getElementById('fastSchedule').classList.toggle('active', currentPhase === 3);
+            
+            document.getElementById('slowLabel').style.color = currentPhase === 1 ? 'var(--text-primary)' : 'var(--text-muted)';
+            document.getElementById('normalLabel').style.color = currentPhase === 2 ? 'var(--text-primary)' : 'var(--text-muted)';
+            document.getElementById('fastLabel').style.color = currentPhase === 3 ? 'var(--text-primary)' : 'var(--text-muted)';
+            
+            document.getElementById('slowLabel').style.fontWeight = currentPhase === 1 ? '700' : '400';
+            document.getElementById('normalLabel').style.fontWeight = currentPhase === 2 ? '700' : '400';
+            document.getElementById('fastLabel').style.fontWeight = currentPhase === 3 ? '700' : '400';
             
             // Update pause banner
             if (sessionStartTime && !isRunning && sessionPauseTime) {
@@ -1415,38 +1595,50 @@
                 soundBtn.className = 'btn btn-icon btn-secondary';
             }
             
+            // Play confirmation sound
+            if (soundEnabled) {
+                playBeep(800, 200);
+            }
+            
             // Save setting
             safeSetItem('am1SoundEnabled', soundEnabled.toString());
         }
 
+        // Handle section toggles with smooth animations
+        function toggleSection(section, btn) {
+            const isShowing = section.classList.contains('show');
+            
+            // Close all sections first
+            document.querySelectorAll('.expandable-section').forEach(s => s.classList.remove('show'));
+            
+            if (!isShowing) {
+                section.classList.add('show');
+                // Update specific displays when opening
+                if (section === calendarSection) {
+                    updateCalendar();
+                } else if (section === logSection) {
+                    updateLogDisplay();
+                } else if (section === backupSection) {
+                    updateDataSummary();
+                }
+            }
+            
+            playBeep(600, 100);
+        }
+
         // Handle calendar toggle
         function handleCalendarToggle() {
-            if (calendarSection.classList.contains('show')) {
-                calendarSection.classList.remove('show');
-            } else {
-                calendarSection.classList.add('show');
-                updateCalendar();
-            }
+            toggleSection(calendarSection, calendarBtn);
         }
 
         // Handle log toggle
         function handleLogToggle() {
-            if (logSection.classList.contains('show')) {
-                logSection.classList.remove('show');
-            } else {
-                logSection.classList.add('show');
-                updateLogDisplay();
-            }
+            toggleSection(logSection, logBtn);
         }
 
         // Handle backup toggle
         function handleBackupToggle() {
-            if (backupSection.classList.contains('show')) {
-                backupSection.classList.remove('show');
-            } else {
-                backupSection.classList.add('show');
-                updateDataSummary();
-            }
+            toggleSection(backupSection, backupBtn);
         }
 
         // Update data summary
@@ -1460,45 +1652,58 @@
                 new Date(Math.max(...workoutLog.map(w => new Date(w.date)))).toLocaleDateString() : 'None';
 
             dataSummary.innerHTML = `
-                <div>Total Workouts: <strong>${totalWorkouts}</strong></div>
-                <div>Timer Workouts: <strong>${timerEntries}</strong></div>
-                <div>Manual Entries: <strong>${manualEntries}</strong></div>
-                <div>Date Range: <strong>${oldestWorkout} - ${newestWorkout}</strong></div>
-                <div>Sound Setting: <strong>${soundEnabled ? 'Enabled' : 'Disabled'}</strong></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <div>Total Workouts: <strong>${totalWorkouts}</strong></div>
+                    <div>Timer Sessions: <strong>${timerEntries}</strong></div>
+                    <div>Manual Entries: <strong>${manualEntries}</strong></div>
+                    <div>Sound: <strong>${soundEnabled ? 'On' : 'Off'}</strong></div>
+                </div>
+                ${totalWorkouts > 0 ? `<div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Range: ${oldestWorkout} → ${newestWorkout}</div>
+                </div>` : ''}
             `;
         }
 
-        // Show status message
+        // Show status message with enhanced styling
         function showBackupStatus(message, type = 'info') {
             const colors = {
-                success: { bg: '#064E3B', border: '#10B981', text: '#D1FAE5' },
-                error: { bg: '#7F1D1D', border: '#EF4444', text: '#FED7D7' },
-                info: { bg: '#1E3A8A', border: '#3B82F6', text: '#DBEAFE' }
+                success: { bg: 'rgba(16, 185, 129, 0.2)', border: 'rgba(16, 185, 129, 0.5)', text: '#10b981' },
+                error: { bg: 'rgba(239, 68, 68, 0.2)', border: 'rgba(239, 68, 68, 0.5)', text: '#ef4444' },
+                info: { bg: 'rgba(59, 130, 246, 0.2)', border: 'rgba(59, 130, 246, 0.5)', text: '#3b82f6' }
             };
             
             const color = colors[type];
             backupStatus.style.cssText = `
                 display: block;
-                background-color: ${color.bg};
+                background: ${color.bg};
                 border: 1px solid ${color.border};
                 color: ${color.text};
+                backdrop-filter: blur(10px);
+                box-shadow: 0 0 20px ${color.border};
             `;
             backupStatus.textContent = message;
             
             setTimeout(() => {
                 backupStatus.style.display = 'none';
-            }, 3000);
+            }, 4000);
         }
 
         // Export data to JSON
         function handleExportData() {
             try {
                 const exportData = {
-                    version: '1.0',
+                    version: '2.0',
                     exportDate: new Date().toISOString(),
+                    appName: 'AM1 Elite Workout Timer',
                     workoutLog: workoutLog,
                     settings: {
                         soundEnabled: soundEnabled
+                    },
+                    stats: {
+                        totalWorkouts: workoutLog.length,
+                        manualEntries: workoutLog.filter(w => w.manual).length,
+                        firstWorkout: workoutLog.length > 0 ? Math.min(...workoutLog.map(w => new Date(w.date))) : null,
+                        lastWorkout: workoutLog.length > 0 ? Math.max(...workoutLog.map(w => new Date(w.date))) : null
                     }
                 };
                 
@@ -1507,11 +1712,11 @@
                 
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(dataBlob);
-                link.download = `AM1_workout_backup_${new Date().toISOString().split('T')[0]}.json`;
+                link.download = `AM1_Elite_Backup_${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
                 
                 URL.revokeObjectURL(link.href);
-                showBackupStatus('Data exported successfully!', 'success');
+                showBackupStatus('Data exported successfully! 🎉', 'success');
                 playBeep(800, 200);
             } catch (error) {
                 showBackupStatus('Export failed: ' + error.message, 'error');
@@ -1524,7 +1729,8 @@
             try {
                 const rawData = {
                     workoutLog: workoutLog,
-                    soundEnabled: soundEnabled
+                    soundEnabled: soundEnabled,
+                    exportDate: new Date().toISOString()
                 };
                 
                 const dataStr = JSON.stringify(rawData, null, 2);
@@ -1532,11 +1738,11 @@
                 
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(dataBlob);
-                link.download = `AM1_raw_data_${new Date().toISOString().split('T')[0]}.json`;
+                link.download = `AM1_Raw_Data_${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
                 
                 URL.revokeObjectURL(link.href);
-                showBackupStatus('Raw JSON downloaded!', 'success');
+                showBackupStatus('Raw JSON downloaded! 📋', 'success');
             } catch (error) {
                 showBackupStatus('Download failed: ' + error.message, 'error');
             }
@@ -1572,11 +1778,11 @@
                             workoutLog.push(...newWorkouts);
                             workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
                             
-                            showBackupStatus(`Merged ${newWorkouts.length} new workouts!`, 'success');
+                            showBackupStatus(`Merged ${newWorkouts.length} new workouts! 🔄`, 'success');
                         } else {
                             // Replace all data
                             workoutLog = importedData.workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
-                            showBackupStatus(`Imported ${workoutLog.length} workouts!`, 'success');
+                            showBackupStatus(`Imported ${workoutLog.length} workouts! ✨`, 'success');
                         }
                         
                         // Import settings if available
@@ -1609,7 +1815,7 @@
                         playBeep(1000, 300);
                         
                     } else {
-                        showBackupStatus('Invalid file format. Please select a valid backup file.', 'error');
+                        showBackupStatus('Invalid file format. Please select a valid backup file. ⚠️', 'error');
                         playBeep(300, 500);
                     }
                 } catch (error) {
@@ -1625,11 +1831,13 @@
         // Clear all data
         function handleClearData() {
             const confirmation = prompt(
-                'Are you sure you want to clear ALL data? This cannot be undone!\n\n' +
-                'Type "CLEAR ALL" to confirm:'
+                '⚠️ DANGER ZONE ⚠️\n\n' +
+                'This will permanently delete ALL your workout data!\n' +
+                'This action cannot be undone.\n\n' +
+                'Type "DELETE EVERYTHING" to confirm:'
             );
             
-            if (confirmation === 'CLEAR ALL') {
+            if (confirmation === 'DELETE EVERYTHING') {
                 workoutLog = [];
                 soundEnabled = true;
                 
@@ -1654,14 +1862,14 @@
                 soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
                 soundBtn.className = 'btn btn-icon btn-blue';
                 
-                showBackupStatus('All data cleared successfully!', 'success');
+                showBackupStatus('All data cleared successfully! 🗑️', 'success');
                 playBeep(400, 300);
             } else if (confirmation !== null) {
-                showBackupStatus('Clear cancelled - confirmation text did not match.', 'error');
+                showBackupStatus('Clear cancelled - safety confirmation failed. ❌', 'error');
             }
         }
 
-        // Update log display
+        // Update log display with enhanced styling
         function updateLogDisplay() {
             logCount.textContent = `${workoutLog.length} sessions`;
             
@@ -1670,25 +1878,47 @@
                 logItems.style.display = 'none';
             } else {
                 logEmpty.style.display = 'none';
-                logItems.style.display = 'block';
+                logItems.style.display = 'flex';
                 
                 logItems.innerHTML = '';
                 workoutLog.forEach((workout, index) => {
                     const workoutDate = new Date(workout.date);
                     const item = document.createElement('div');
-                    item.className = 'log-item';
+                    item.style.cssText = `
+                        background: var(--glass-bg);
+                        backdrop-filter: blur(15px);
+                        border-radius: 12px;
+                        padding: 1rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        border: 1px solid var(--glass-border);
+                        transition: all 0.3s ease;
+                        animation: slideInUp 0.3s ease-out;
+                        animation-delay: ${index * 0.05}s;
+                    `;
+                    
+                    item.addEventListener('mouseenter', () => {
+                        item.style.transform = 'translateY(-2px)';
+                        item.style.boxShadow = 'var(--shadow-light)';
+                    });
+                    
+                    item.addEventListener('mouseleave', () => {
+                        item.style.transform = 'translateY(0)';
+                        item.style.boxShadow = 'none';
+                    });
                     
                     const timeDisplay = workout.manual ? 'Manual Entry' : workout.time;
-                    const manualIndicator = workout.manual ? ' (Manual)' : '';
+                    const manualIndicator = workout.manual ? ' 🖊️' : ' ⏱️';
                     
                     item.innerHTML = `
-                        <div class="log-item-left">
-                            <div class="log-item-date">${workoutDate.toLocaleDateString()}${manualIndicator}</div>
-                            <div class="log-item-time">${timeDisplay}</div>
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">${workoutDate.toLocaleDateString()}${manualIndicator}</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${timeDisplay}</div>
                         </div>
-                        <div class="log-item-right">
-                            <div class="log-item-status">✓ Completed</div>
-                            <div class="log-item-duration">${workout.duration}</div>
+                        <div style="text-align: right;">
+                            <div style="color: #10b981; font-weight: 600; margin-bottom: 0.25rem;">✓ Complete</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${workout.duration}</div>
                         </div>
                     `;
                     logItems.appendChild(item);
@@ -1718,8 +1948,8 @@
             let status, message, className;
             
             if (workoutLog.length === 0) {
-                status = '💪 Workout Day';
-                message = 'Ready to start your first workout!';
+                status = '💪 Ready to Dominate';
+                message = 'Your first elite workout awaits!';
                 className = 'workout';
             } else {
                 const lastWorkout = workoutLog[0];
@@ -1729,19 +1959,19 @@
                 const isTodayWorkout = isSameDate(lastWorkoutDate, today);
                 
                 if (isTodayWorkout) {
-                    status = '😴 Rest Day';
-                    message = 'Rest day! You worked out today.';
+                    status = '🏆 Mission Complete';
+                    message = 'Outstanding work today! Time to recover and recharge.';
                     className = 'rest';
                 } else {
-                    status = '💪 Workout Day';
-                    message = 'Ready for your next session!';
+                    status = '🔥 Time to Crush It';
+                    message = 'Ready to unleash your potential!';
                     className = 'workout';
                 }
             }
             
             scheduleStatus.querySelector('.schedule-title').textContent = status;
             scheduleStatus.querySelector('.schedule-message').textContent = message;
-            scheduleStatus.className = `schedule-status ${className}`;
+            scheduleStatus.className = `status-card ${className}`;
         }
 
         // Load saved settings
@@ -1756,14 +1986,19 @@
             }
         }
 
-        // Initialize app
+        // Initialize app with enhanced startup
         function init() {
+            // Create floating particles
+            createParticles();
+            
+            // Load data and settings
             loadSettings();
             loadWorkoutLog();
             updateUI();
             updateScheduleStatus();
             generateCalendar();
             
+            // Add event listeners
             startBtn.addEventListener('click', handleStart);
             resetBtn.addEventListener('click', handleReset);
             soundBtn.addEventListener('click', handleSoundToggle);
@@ -1777,6 +2012,40 @@
             importFileInput.addEventListener('change', processImportFile);
             prevMonth.addEventListener('click', () => handleCalendarNav('prev'));
             nextMonth.addEventListener('click', () => handleCalendarNav('next'));
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' && !e.target.matches('input, textarea, button')) {
+                    e.preventDefault();
+                    handleStart();
+                } else if (e.code === 'KeyR' && e.ctrlKey) {
+                    e.preventDefault();
+                    handleReset();
+                } else if (e.code === 'KeyS' && e.ctrlKey) {
+                    e.preventDefault();
+                    handleSoundToggle();
+                }
+            });
+            
+            // Add touch gestures for mobile
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            });
+            
+            document.addEventListener('touchend', (e) => {
+                const touchEndY = e.changedTouches[0].clientY;
+                const diff = touchStartY - touchEndY;
+                
+                // Swipe up to start/pause (only on the main phase display)
+                if (Math.abs(diff) > 50 && e.target.closest('#phaseDisplay')) {
+                    if (diff > 0) { // Swipe up
+                        handleStart();
+                    }
+                }
+            });
+            
+            console.log('🔥 AM1 Elite Workout Timer initialized successfully!');
         }
 
         // Start the app when page loads
