@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AM1 Elite Workout Timer</title>
+    <title>AM Elite Workout Timers</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -110,6 +110,50 @@
             letter-spacing: 0.1em;
         }
 
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: rgba(102, 126, 234, 0.5);
+            color: var(--text-primary);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: contents;
+        }
+
         .status-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -197,6 +241,11 @@
             box-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
         }
 
+        .phase-display.am3 {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+        }
+
         .phase-name {
             font-size: clamp(3rem, 10vw, 6rem);
             font-weight: 900;
@@ -224,6 +273,39 @@
             font-weight: 700;
             color: var(--text-primary);
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Duration Selector for AM3 */
+        .duration-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .duration-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .duration-btn:hover {
+            transform: scale(1.05);
+            color: var(--text-primary);
+        }
+
+        .duration-btn.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-color: rgba(139, 92, 246, 0.5);
+            color: var(--text-primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
         }
 
         .progress-container {
@@ -279,6 +361,11 @@
         .progress-fill.fast {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .progress-fill.am3 {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
         }
 
         .workout-progress {
@@ -453,6 +540,7 @@
         .calendar-day {
             aspect-ratio: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             border-radius: 12px;
@@ -491,20 +579,20 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
-        .calendar-day.completed::after {
-            content: '✓';
-            position: absolute;
-            top: 2px;
-            right: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            opacity: 0.8;
-        }
-
         .calendar-day.rest {
             background: rgba(245, 158, 11, 0.2);
             border: 2px dashed rgba(245, 158, 11, 0.5);
             color: var(--text-secondary);
+        }
+
+        .workout-badge {
+            position: absolute;
+            bottom: 2px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            opacity: 0.9;
+            display: flex;
+            gap: 2px;
         }
 
         .phase-schedule {
@@ -627,7 +715,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Mobile Optimizations */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -666,9 +753,17 @@
             .calendar-day {
                 font-size: 0.8rem;
             }
+
+            .tab-nav {
+                gap: 0.5rem;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
         }
 
-        /* Enhanced Animations */
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -683,68 +778,173 @@
         .glass-card {
             animation: slideInUp 0.6s ease-out;
         }
-
-        .glass-card:nth-child(2) { animation-delay: 0.1s; }
-        .glass-card:nth-child(3) { animation-delay: 0.2s; }
-        .glass-card:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
-    <!-- Floating Particles Background -->
     <div class="floating-particles" id="particles"></div>
 
     <div class="container">
         <!-- Header -->
         <div class="glass-card header">
-            <h1>AM1</h1>
-            <p>Elite 3-Phase Workout Timer</p>
+            <h1>AM ELITE</h1>
+            <p>Professional Workout Timers</p>
         </div>
 
-        <!-- Schedule Status -->
-        <div id="scheduleStatus" class="status-card workout">
-            <div class="schedule-title" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">💪 Workout Day</div>
-            <p class="schedule-message" style="color: var(--text-secondary);">Ready to start your first workout!</p>
-        </div>
-
-        <!-- Current Phase Display -->
-        <div id="phaseDisplay" class="phase-display slow">
-            <div class="phase-display-content">
-                <div class="phase-name">SLOW</div>
-                <div class="phase-info">Phase 1 of 3</div>
-                <div id="phaseTime" class="phase-time">01:00</div>
+        <!-- Tab Navigation -->
+        <div class="glass-card">
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="am1">AM1 - 3 Phase</button>
+                <button class="tab-btn" data-tab="am3">AM3 - Endurance</button>
             </div>
         </div>
 
-        <!-- Progress Bars -->
-        <div class="glass-card progress-container">
-            <div class="progress-bar">
-                <div id="phaseProgress" class="progress-fill slow" style="width: 0%"></div>
+        <!-- AM1 Content -->
+        <div id="am1Tab" class="tab-content active">
+            <div id="am1Status" class="status-card workout">
+                <div class="schedule-title" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">💪 AM1 Workout Day</div>
+                <p class="schedule-message" style="color: var(--text-secondary);">Ready to start your 3-phase workout!</p>
             </div>
 
-            <div class="workout-progress">
-                <div class="workout-progress-header">
-                    <span>Total Workout Progress</span>
-                    <span id="remainingTime">20:00 remaining</span>
-                </div>
-                <div class="workout-progress-bar">
-                    <div id="totalProgress" class="workout-progress-fill" style="width: 0%"></div>
+            <div id="am1PhaseDisplay" class="phase-display slow">
+                <div class="phase-display-content">
+                    <div class="phase-name">SLOW</div>
+                    <div class="phase-info">Phase 1 of 3</div>
+                    <div id="am1PhaseTime" class="phase-time">01:00</div>
                 </div>
             </div>
+
+            <div class="glass-card progress-container">
+                <div class="progress-bar">
+                    <div id="am1PhaseProgress" class="progress-fill slow" style="width: 0%"></div>
+                </div>
+
+                <div class="workout-progress">
+                    <div class="workout-progress-header">
+                        <span>Total Workout Progress</span>
+                        <span id="am1RemainingTime">15:00 remaining</span>
+                    </div>
+                    <div class="workout-progress-bar">
+                        <div id="am1TotalProgress" class="workout-progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="controls">
+                    <button id="am1StartBtn" class="btn btn-primary">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        Start
+                    </button>
+                    
+                    <button id="am1ResetBtn" class="btn btn-secondary">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="phase-schedule">
+                <div class="section-header">
+                    <h3 class="section-title">Phase Schedule</h3>
+                </div>
+                <div class="schedule-items">
+                    <div class="schedule-item active" id="am1SlowSchedule">
+                        <div style="display: flex; align-items: center;">
+                            <div class="schedule-dot slow"></div>
+                            <span id="am1SlowLabel" style="font-weight: 600;">SLOW</span>
+                        </div>
+                        <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
+                    </div>
+                    <div class="schedule-item" id="am1NormalSchedule">
+                        <div style="display: flex; align-items: center;">
+                            <div class="schedule-dot normal"></div>
+                            <span id="am1NormalLabel" style="color: var(--text-muted);">NORMAL</span>
+                        </div>
+                        <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
+                    </div>
+                    <div class="schedule-item" id="am1FastSchedule">
+                        <div style="display: flex; align-items: center;">
+                            <div class="schedule-dot fast"></div>
+                            <span id="am1FastLabel" style="color: var(--text-muted);">FAST</span>
+                        </div>
+                        <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="am1CompletionBanner" class="completion-banner" style="display: none;">
+                <div class="completion-title">🎉 AM1 Complete!</div>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Outstanding work finishing your 3-phase session!</p>
+            </div>
+
+            <div id="am1PauseBanner" class="pause-banner" style="display: none;">
+                <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">⏸️ Session Paused</div>
+                <p style="color: var(--text-secondary);">Your workout will resume exactly where you left off!</p>
+            </div>
         </div>
 
-        <!-- Controls -->
+        <!-- AM3 Content -->
+        <div id="am3Tab" class="tab-content">
+            <div id="am3Status" class="status-card workout">
+                <div class="schedule-title" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">🔥 AM3 Workout Day</div>
+                <p class="schedule-message" style="color: var(--text-secondary);">Ready for your endurance session!</p>
+            </div>
+
+            <div id="am3PhaseDisplay" class="phase-display am3">
+                <div class="phase-display-content">
+                    <div class="phase-name">AM3</div>
+                    <div class="phase-info">Endurance Timer</div>
+                    <div id="am3PhaseTime" class="phase-time">15:00</div>
+                    
+                    <div class="duration-selector">
+                        <button class="duration-btn active" data-duration="15">15 min</button>
+                        <button class="duration-btn" data-duration="20">20 min</button>
+                        <button class="duration-btn" data-duration="25">25 min</button>
+                        <button class="duration-btn" data-duration="30">30 min</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card progress-container">
+                <div class="workout-progress">
+                    <div class="workout-progress-header">
+                        <span>Workout Progress</span>
+                        <span id="am3RemainingTime">15:00 remaining</span>
+                    </div>
+                    <div class="workout-progress-bar">
+                        <div id="am3TotalProgress" class="workout-progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="controls">
+                    <button id="am3StartBtn" class="btn btn-primary">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        Start
+                    </button>
+                    
+                    <button id="am3ResetBtn" class="btn btn-secondary">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <div id="am3CompletionBanner" class="completion-banner" style="display: none;">
+                <div class="completion-title">🎉 AM3 Complete!</div>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Incredible endurance session completed!</p>
+            </div>
+
+            <div id="am3PauseBanner" class="pause-banner" style="display: none;">
+                <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">⏸️ Session Paused</div>
+                <p style="color: var(--text-secondary);">Your workout will resume exactly where you left off!</p>
+            </div>
+        </div>
+
+        <!-- Shared Controls -->
         <div class="glass-card">
             <div class="controls">
-                <button id="startBtn" class="btn btn-primary">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    Start
-                </button>
-                
-                <button id="resetBtn" class="btn btn-secondary">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                    Reset
-                </button>
-
                 <button id="soundBtn" class="btn btn-icon btn-blue">
                     <svg id="soundIcon" class="icon" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
                 </button>
@@ -774,9 +974,7 @@
                     </div>
                 </div>
                 
-                <div class="calendar-grid" id="calendarGrid">
-                    <!-- Calendar will be generated here -->
-                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
 
                 <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; font-size: 0.8rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -807,9 +1005,7 @@
                     No workouts completed yet. Start your first session!
                 </div>
                 
-                <div id="logItems" style="display: none; flex-direction: column; gap: 1rem; max-height: 300px; overflow-y: auto;">
-                    <!-- Log items will be inserted here -->
-                </div>
+                <div id="logItems" style="display: none; flex-direction: column; gap: 1rem; max-height: 300px; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -842,9 +1038,7 @@
                     
                     <input type="file" id="importFileInput" accept=".json,.txt" style="display: none;">
                     
-                    <div id="backupStatus" style="padding: 1rem; border-radius: 12px; font-size: 0.9rem; display: none; backdrop-filter: blur(10px);">
-                        <!-- Status messages will appear here -->
-                    </div>
+                    <div id="backupStatus" style="padding: 1rem; border-radius: 12px; font-size: 0.9rem; display: none; backdrop-filter: blur(10px);"></div>
                     
                     <div style="background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 12px; padding: 1rem; border: 1px solid var(--glass-border);">
                         <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;">Data Summary:</div>
@@ -855,77 +1049,9 @@
                 </div>
             </div>
         </div>
-
-        <!-- Phase Schedule -->
-        <div class="phase-schedule">
-            <div class="section-header">
-                <h3 class="section-title">Phase Schedule</h3>
-            </div>
-            <div class="schedule-items">
-                <div class="schedule-item active" id="slowSchedule">
-                    <div style="display: flex; align-items: center;">
-                        <div class="schedule-dot slow"></div>
-                        <span id="slowLabel" style="font-weight: 600;">SLOW</span>
-                    </div>
-                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
-                </div>
-                <div class="schedule-item" id="normalSchedule">
-                    <div style="display: flex; align-items: center;">
-                        <div class="schedule-dot normal"></div>
-                        <span id="normalLabel" style="color: var(--text-muted);">NORMAL</span>
-                    </div>
-                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
-                </div>
-                <div class="schedule-item" id="fastSchedule">
-                    <div style="display: flex; align-items: center;">
-                        <div class="schedule-dot fast"></div>
-                        <span id="fastLabel" style="color: var(--text-muted);">FAST</span>
-                    </div>
-                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Completion Banner -->
-        <div id="completionBanner" class="completion-banner" style="display: none;">
-            <div class="completion-title">🎉 Workout Complete!</div>
-            <p style="color: var(--text-secondary); font-size: 1.1rem;">Outstanding work finishing your 20-minute AM1 session!</p>
-        </div>
-
-        <!-- Pause Banner -->
-        <div id="pauseBanner" class="pause-banner" style="display: none;">
-            <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">⏸️ Session Paused</div>
-            <p style="color: var(--text-secondary);">Your workout will resume exactly where you left off when you hit Resume!</p>
-        </div>
     </div>
 
     <script>
-        // Floating particles animation
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const size = Math.random() * 4 + 1;
-                const left = Math.random() * 100;
-                const animationDuration = Math.random() * 10 + 10;
-                const animationDelay = Math.random() * 15;
-                
-                particle.style.cssText = `
-                    width: ${size}px;
-                    height: ${size}px;
-                    left: ${left}%;
-                    animation-duration: ${animationDuration}s;
-                    animation-delay: ${animationDelay}s;
-                `;
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        // Safe storage wrapper with fallback
         let tempStorage = {};
         
         function safeSetItem(key, value) {
@@ -944,76 +1070,70 @@
             }
         }
 
-        // Timer variables
-        let timerInterval;
-        let sessionDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
-        let sessionStartTime = null;
-        let sessionPauseTime = null;
-        let totalPausedTime = 0;
-        let phaseStartTime = null;
-        let isRunning = false;
-        let currentPhase = 1;
-        let phaseTime = 0;
-        let totalTime = 0;
+        // Global variables
+        let currentTab = 'am1';
         let soundEnabled = true;
         let workoutLog = [];
         let currentCalendarDate = new Date();
+        let audioContext = null;
         let wakeLock = null;
 
-        // Phases configuration
-        const phases = [
+        // AM1 Timer variables
+        let am1Interval;
+        let am1SessionStart = null;
+        let am1PauseTime = null;
+        let am1TotalPaused = 0;
+        let am1PhaseStart = null;
+        let am1Running = false;
+        let am1CurrentPhase = 1;
+        let am1PhaseTime = 0;
+        let am1TotalTime = 0;
+        const am1SessionDuration = 15 * 60 * 1000;
+        const am1Phases = [
             { id: 1, name: 'SLOW', duration: 60, color: 'slow' },
             { id: 2, name: 'NORMAL', duration: 60, color: 'normal' },
             { id: 3, name: 'FAST', duration: 60, color: 'fast' }
         ];
 
-        // DOM elements
-        const startBtn = document.getElementById('startBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const soundBtn = document.getElementById('soundBtn');
-        const calendarBtn = document.getElementById('calendarBtn');
-        const logBtn = document.getElementById('logBtn');
-        const backupBtn = document.getElementById('backupBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const importBtn = document.getElementById('importBtn');
-        const clearDataBtn = document.getElementById('clearDataBtn');
-        const downloadJsonBtn = document.getElementById('downloadJsonBtn');
-        const importFileInput = document.getElementById('importFileInput');
-        const phaseDisplay = document.getElementById('phaseDisplay');
-        const phaseTime_el = document.getElementById('phaseTime');
-        const phaseProgress = document.getElementById('phaseProgress');
-        const totalProgress = document.getElementById('totalProgress');
-        const remainingTime = document.getElementById('remainingTime');
-        const calendarSection = document.getElementById('calendarSection');
-        const logSection = document.getElementById('logSection');
-        const backupSection = document.getElementById('backupSection');
-        const backupStatus = document.getElementById('backupStatus');
-        const dataSummary = document.getElementById('dataSummary');
-        const logCount = document.getElementById('logCount');
-        const logEmpty = document.getElementById('logEmpty');
-        const logItems = document.getElementById('logItems');
-        const completionBanner = document.getElementById('completionBanner');
-        const pauseBanner = document.getElementById('pauseBanner');
-        const scheduleStatus = document.getElementById('scheduleStatus');
-        const soundIcon = document.getElementById('soundIcon');
-        const calendarTitle = document.getElementById('calendarTitle');
-        const prevMonth = document.getElementById('prevMonth');
-        const nextMonth = document.getElementById('nextMonth');
-        const calendarGrid = document.getElementById('calendarGrid');
+        // AM3 Timer variables
+        let am3Interval;
+        let am3SessionStart = null;
+        let am3PauseTime = null;
+        let am3TotalPaused = 0;
+        let am3Running = false;
+        let am3TotalTime = 0;
+        let am3Duration = 15; // minutes
+        let am3SessionDuration = 15 * 60 * 1000;
 
-        // Screen Wake Lock functions
+        // Floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 1;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 10 + 10;
+                const animationDelay = Math.random() * 15;
+                particle.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    animation-duration: ${animationDuration}s;
+                    animation-delay: ${animationDelay}s;
+                `;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Wake Lock
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Screen wake lock activated');
-                    
-                    wakeLock.addEventListener('release', () => {
-                        console.log('Screen wake lock released');
-                    });
                 }
             } catch (err) {
-                console.log('Wake lock request failed:', err);
+                console.log('Wake lock failed:', err);
             }
         }
 
@@ -1022,40 +1142,29 @@
                 try {
                     await wakeLock.release();
                     wakeLock = null;
-                    console.log('Screen wake lock released manually');
-                } catch (err) {
-                    console.log('Wake lock release failed:', err);
-                }
+                } catch (err) {}
             }
         }
 
-        // Handle visibility change to re-request wake lock if needed
         document.addEventListener('visibilitychange', async () => {
-            if (wakeLock !== null && document.visibilityState === 'visible' && isRunning) {
+            if (wakeLock !== null && document.visibilityState === 'visible' && (am1Running || am3Running)) {
                 await requestWakeLock();
             }
         });
 
-        // Audio context for beeps
-        let audioContext = null;
-
-        // Enhanced sound function with multiple tones
+        // Audio functions
         function playBeep(frequency = 800, duration = 200, type = 'phase') {
             if (!soundEnabled) return;
-            
             try {
                 if (!audioContext) {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
                 if (type === 'completion') {
-                    // Special completion sound
                     oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
                     oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
                     oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
@@ -1064,38 +1173,27 @@
                 }
                 
                 oscillator.type = type === 'completion' ? 'triangle' : 'sine';
-                
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
-                
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + duration / 1000);
-            } catch (error) {
-                console.log('Audio not available');
-            }
+            } catch (error) {}
         }
 
-        // Enhanced voice announcement function
         function speakPhase(phaseName) {
             if (!soundEnabled) return;
-            
             try {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(phaseName.toLowerCase());
                 utterance.rate = 1.2;
                 utterance.volume = 0.8;
                 utterance.pitch = 1.0;
-                
-                // Add emphasis for phase changes
                 if (phaseName === 'FAST') {
                     utterance.rate = 1.4;
                     utterance.pitch = 1.2;
                 }
-                
                 window.speechSynthesis.speak(utterance);
-            } catch (error) {
-                console.log('Speech synthesis not available');
-            }
+            } catch (error) {}
         }
 
         // Date utilities
@@ -1109,10 +1207,314 @@
         }
 
         function isSameDate(date1, date2) {
-            return formatDateKey(date1) === formatDateKey(date2);  
+            return formatDateKey(date1) === formatDateKey(date2);
         }
 
-        // Calendar functions
+        // Format time
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `${tabName}Tab`);
+            });
+            updateScheduleStatus();
+        }
+
+        // AM1 Functions
+        function updateAM1Timer() {
+            if (!am1SessionStart) return;
+            
+            const currentTime = Date.now();
+            const elapsedTime = Math.floor((currentTime - am1SessionStart - am1TotalPaused) / 1000);
+            const remainingTime = Math.max(0, (am1SessionDuration / 1000) - elapsedTime);
+            
+            am1TotalTime = elapsedTime;
+            const phaseElapsed = Math.floor((currentTime - am1PhaseStart - am1TotalPaused) / 1000);
+            am1PhaseTime = phaseElapsed;
+            
+            const currentPhaseData = am1Phases.find(p => p.id === am1CurrentPhase);
+            if (phaseElapsed >= currentPhaseData.duration) {
+                playBeep(1000, 300);
+                const nextPhase = am1CurrentPhase === 3 ? 1 : am1CurrentPhase + 1;
+                const nextPhaseData = am1Phases.find(p => p.id === nextPhase);
+                am1CurrentPhase = nextPhase;
+                am1PhaseStart = currentTime;
+                am1PhaseTime = 0;
+                setTimeout(() => speakPhase(nextPhaseData.name), 100);
+            }
+            
+            if (remainingTime <= 0) {
+                clearInterval(am1Interval);
+                const completedWorkout = {
+                    date: new Date().toISOString(),
+                    time: new Date().toLocaleTimeString(),
+                    duration: '15 minutes',
+                    cycles: 5,
+                    type: 'AM1'
+                };
+                workoutLog.unshift(completedWorkout);
+                saveWorkoutLog();
+                playBeep(1200, 500, 'completion');
+                am1Running = false;
+                releaseWakeLock();
+                document.getElementById('am1CompletionBanner').style.display = 'block';
+                updateCalendar();
+                createConfetti();
+            }
+            
+            updateAM1UI();
+        }
+
+        function updateAM1UI() {
+            const currentPhaseData = am1Phases.find(p => p.id === am1CurrentPhase);
+            const remainingTime = Math.max(0, (am1SessionDuration / 1000) - am1TotalTime);
+            const phaseRemaining = Math.max(0, currentPhaseData.duration - am1PhaseTime);
+            
+            const phaseDisplay = document.getElementById('am1PhaseDisplay');
+            phaseDisplay.className = `phase-display ${currentPhaseData.color}`;
+            phaseDisplay.querySelector('.phase-name').textContent = currentPhaseData.name;
+            phaseDisplay.querySelector('.phase-info').textContent = `Phase ${am1CurrentPhase} of 3`;
+            document.getElementById('am1PhaseTime').textContent = formatTime(phaseRemaining);
+            
+            const phaseProgressPct = (am1PhaseTime / currentPhaseData.duration) * 100;
+            const phaseProgress = document.getElementById('am1PhaseProgress');
+            phaseProgress.style.width = `${Math.min(phaseProgressPct, 100)}%`;
+            phaseProgress.className = `progress-fill ${currentPhaseData.color}`;
+            
+            const totalProgressPct = (am1TotalTime / (am1SessionDuration / 1000)) * 100;
+            document.getElementById('am1TotalProgress').style.width = `${Math.min(totalProgressPct, 100)}%`;
+            document.getElementById('am1RemainingTime').textContent = `${formatTime(remainingTime)} remaining`;
+            
+            const startBtn = document.getElementById('am1StartBtn');
+            if (am1Running) {
+                startBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+                startBtn.className = 'btn btn-warning';
+            } else {
+                const buttonText = am1SessionStart ? 'Resume' : 'Start';
+                startBtn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ${buttonText}`;
+                startBtn.className = 'btn btn-primary';
+            }
+            
+            startBtn.disabled = am1TotalTime >= (am1SessionDuration / 1000);
+            
+            document.getElementById('am1SlowSchedule').classList.toggle('active', am1CurrentPhase === 1);
+            document.getElementById('am1NormalSchedule').classList.toggle('active', am1CurrentPhase === 2);
+            document.getElementById('am1FastSchedule').classList.toggle('active', am1CurrentPhase === 3);
+            
+            document.getElementById('am1SlowLabel').style.color = am1CurrentPhase === 1 ? 'var(--text-primary)' : 'var(--text-muted)';
+            document.getElementById('am1NormalLabel').style.color = am1CurrentPhase === 2 ? 'var(--text-primary)' : 'var(--text-muted)';
+            document.getElementById('am1FastLabel').style.color = am1CurrentPhase === 3 ? 'var(--text-primary)' : 'var(--text-muted)';
+            
+            document.getElementById('am1PauseBanner').style.display = (am1SessionStart && !am1Running && am1PauseTime) ? 'block' : 'none';
+        }
+
+        function handleAM1Start() {
+            if (!am1Running) {
+                if (!am1SessionStart) {
+                    const now = Date.now();
+                    am1SessionStart = now;
+                    am1PhaseStart = now;
+                    am1PauseTime = null;
+                    am1TotalPaused = 0;
+                    am1CurrentPhase = 1;
+                    am1PhaseTime = 0;
+                    am1TotalTime = 0;
+                    playBeep(600, 150);
+                    setTimeout(() => speakPhase('slow'), 200);
+                    document.getElementById('am1CompletionBanner').style.display = 'none';
+                } else if (am1PauseTime) {
+                    const now = Date.now();
+                    am1TotalPaused += now - am1PauseTime;
+                    am1PauseTime = null;
+                }
+                am1Running = true;
+                requestWakeLock();
+                am1Interval = setInterval(updateAM1Timer, 100);
+            } else {
+                am1Running = false;
+                am1PauseTime = Date.now();
+                clearInterval(am1Interval);
+                releaseWakeLock();
+                playBeep(400, 150);
+            }
+            updateAM1UI();
+        }
+
+        function handleAM1Reset() {
+            am1Running = false;
+            clearInterval(am1Interval);
+            am1SessionStart = null;
+            am1PauseTime = null;
+            am1TotalPaused = 0;
+            am1PhaseStart = null;
+            am1CurrentPhase = 1;
+            am1PhaseTime = 0;
+            am1TotalTime = 0;
+            playBeep(300, 100);
+            releaseWakeLock();
+            document.getElementById('am1CompletionBanner').style.display = 'none';
+            document.getElementById('am1PauseBanner').style.display = 'none';
+            updateAM1UI();
+        }
+
+        // AM3 Functions
+        function updateAM3Timer() {
+            if (!am3SessionStart) return;
+            
+            const currentTime = Date.now();
+            const elapsedTime = Math.floor((currentTime - am3SessionStart - am3TotalPaused) / 1000);
+            const remainingTime = Math.max(0, (am3SessionDuration / 1000) - elapsedTime);
+            
+            am3TotalTime = elapsedTime;
+            
+            if (remainingTime <= 0) {
+                clearInterval(am3Interval);
+                const completedWorkout = {
+                    date: new Date().toISOString(),
+                    time: new Date().toLocaleTimeString(),
+                    duration: `${am3Duration} minutes`,
+                    type: 'AM3'
+                };
+                workoutLog.unshift(completedWorkout);
+                saveWorkoutLog();
+                playBeep(1200, 500, 'completion');
+                am3Running = false;
+                releaseWakeLock();
+                document.getElementById('am3CompletionBanner').style.display = 'block';
+                updateCalendar();
+                createConfetti();
+            }
+            
+            updateAM3UI();
+        }
+
+        function updateAM3UI() {
+            const remainingTime = Math.max(0, (am3SessionDuration / 1000) - am3TotalTime);
+            
+            document.getElementById('am3PhaseTime').textContent = formatTime(remainingTime);
+            
+            const totalProgressPct = (am3TotalTime / (am3SessionDuration / 1000)) * 100;
+            document.getElementById('am3TotalProgress').style.width = `${Math.min(totalProgressPct, 100)}%`;
+            document.getElementById('am3RemainingTime').textContent = `${formatTime(remainingTime)} remaining`;
+            
+            const startBtn = document.getElementById('am3StartBtn');
+            if (am3Running) {
+                startBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+                startBtn.className = 'btn btn-warning';
+            } else {
+                const buttonText = am3SessionStart ? 'Resume' : 'Start';
+                startBtn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ${buttonText}`;
+                startBtn.className = 'btn btn-primary';
+            }
+            
+            startBtn.disabled = am3TotalTime >= (am3SessionDuration / 1000);
+            
+            document.getElementById('am3PauseBanner').style.display = (am3SessionStart && !am3Running && am3PauseTime) ? 'block' : 'none';
+            
+            // Disable duration buttons when workout is active
+            document.querySelectorAll('.duration-btn').forEach(btn => {
+                btn.disabled = am3SessionStart !== null;
+                btn.style.opacity = am3SessionStart !== null ? '0.5' : '1';
+            });
+        }
+
+        function handleAM3Start() {
+            if (!am3Running) {
+                if (!am3SessionStart) {
+                    const now = Date.now();
+                    am3SessionStart = now;
+                    am3PauseTime = null;
+                    am3TotalPaused = 0;
+                    am3TotalTime = 0;
+                    playBeep(600, 150);
+                    document.getElementById('am3CompletionBanner').style.display = 'none';
+                } else if (am3PauseTime) {
+                    const now = Date.now();
+                    am3TotalPaused += now - am3PauseTime;
+                    am3PauseTime = null;
+                }
+                am3Running = true;
+                requestWakeLock();
+                am3Interval = setInterval(updateAM3Timer, 100);
+            } else {
+                am3Running = false;
+                am3PauseTime = Date.now();
+                clearInterval(am3Interval);
+                releaseWakeLock();
+                playBeep(400, 150);
+            }
+            updateAM3UI();
+        }
+
+        function handleAM3Reset() {
+            am3Running = false;
+            clearInterval(am3Interval);
+            am3SessionStart = null;
+            am3PauseTime = null;
+            am3TotalPaused = 0;
+            am3TotalTime = 0;
+            playBeep(300, 100);
+            releaseWakeLock();
+            document.getElementById('am3CompletionBanner').style.display = 'none';
+            document.getElementById('am3PauseBanner').style.display = 'none';
+            updateAM3UI();
+        }
+
+        function handleAM3DurationChange(duration) {
+            if (am3SessionStart !== null) return; // Can't change during workout
+            
+            am3Duration = duration;
+            am3SessionDuration = duration * 60 * 1000;
+            document.getElementById('am3PhaseTime').textContent = formatTime(duration * 60);
+            document.getElementById('am3RemainingTime').textContent = `${formatTime(duration * 60)} remaining`;
+            
+            document.querySelectorAll('.duration-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.duration) === duration);
+            });
+            
+            playBeep(600, 100);
+        }
+
+        // Confetti
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    top: -10px;
+                    left: ${Math.random() * 100}%;
+                    width: ${Math.random() * 6 + 4}px;
+                    height: ${Math.random() * 6 + 4}px;
+                    background: ${['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7'][Math.floor(Math.random() * 5)]};
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 10000;
+                    animation: confettiFall ${Math.random() * 2 + 2}s linear forwards;
+                `;
+                document.body.appendChild(confetti);
+                setTimeout(() => {
+                    if (confetti.parentNode) confetti.parentNode.removeChild(confetti);
+                }, 4000);
+            }
+            
+            if (!document.getElementById('confettiAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'confettiAnimation';
+                style.textContent = `@keyframes confettiFall { to { transform: translateY(calc(100vh + 20px)) rotate(720deg); } }`;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Calendar Functions
         function getDaysInMonth(year, month) {
             return new Date(year, month + 1, 0).getDate();
         }
@@ -1122,10 +1524,7 @@
         }
 
         function getMonthName(month) {
-            const months = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             return months[month];
         }
 
@@ -1139,25 +1538,33 @@
                 return dayElement;
             }
             
-            // Check if this is today
             if (isToday(date)) {
                 dayElement.classList.add('today');
             }
             
-            // Check if this date has a completed workout
-            const hasWorkout = workoutLog.some(workout => {
+            const workoutsOnDate = workoutLog.filter(workout => {
                 const workoutDate = new Date(workout.date);
                 return isSameDate(workoutDate, date);
             });
             
-            if (hasWorkout) {
+            if (workoutsOnDate.length > 0) {
                 dayElement.classList.add('completed');
+                
+                // Add workout type badges
+                const badgeContainer = document.createElement('div');
+                badgeContainer.className = 'workout-badge';
+                
+                const hasAM1 = workoutsOnDate.some(w => w.type === 'AM1');
+                const hasAM3 = workoutsOnDate.some(w => w.type === 'AM3');
+                
+                if (hasAM1) badgeContainer.innerHTML += '1';
+                if (hasAM3) badgeContainer.innerHTML += '3';
+                
+                dayElement.appendChild(badgeContainer);
             } else if (date < new Date() && !isToday(date)) {
-                // Mark past days without workouts as missed/rest days
                 dayElement.classList.add('rest');
             }
             
-            // Add click handler for manual editing (only for current/past days, not future)
             if (date <= new Date()) {
                 dayElement.style.cursor = 'pointer';
                 dayElement.addEventListener('click', () => handleCalendarDayClick(date, dayElement));
@@ -1170,12 +1577,11 @@
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
             
-            calendarTitle.textContent = `${getMonthName(month)} ${year}`;
+            document.getElementById('calendarTitle').textContent = `${getMonthName(month)} ${year}`;
             
-            // Clear the grid
+            const calendarGrid = document.getElementById('calendarGrid');
             calendarGrid.innerHTML = '';
             
-            // Add day headers
             const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             dayHeaders.forEach(day => {
                 const header = document.createElement('div');
@@ -1188,29 +1594,23 @@
             const firstDay = getFirstDayOfMonth(year, month);
             const daysInPrevMonth = getDaysInMonth(year, month - 1);
             
-            // Add previous month's trailing days
             for (let i = firstDay - 1; i >= 0; i--) {
                 const day = daysInPrevMonth - i;
                 const prevMonthDate = new Date(year, month - 1, day);
-                const dayElement = createCalendarDay(day, true, prevMonthDate);
-                calendarGrid.appendChild(dayElement);
+                calendarGrid.appendChild(createCalendarDay(day, true, prevMonthDate));
             }
             
-            // Add current month's days
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
-                const dayElement = createCalendarDay(day, false, date);
-                calendarGrid.appendChild(dayElement);
+                calendarGrid.appendChild(createCalendarDay(day, false, date));
             }
             
-            // Add next month's leading days to fill the grid
             const totalCells = calendarGrid.children.length;
-            const remainingCells = 42 - totalCells; // 6 rows * 7 days - existing cells
+            const remainingCells = 42 - totalCells;
             
             for (let day = 1; day <= remainingCells; day++) {
                 const nextMonthDate = new Date(year, month + 1, day);
-                const dayElement = createCalendarDay(day, true, nextMonthDate);
-                calendarGrid.appendChild(dayElement);
+                calendarGrid.appendChild(createCalendarDay(day, true, nextMonthDate));
             }
         }
 
@@ -1227,74 +1627,72 @@
             generateCalendar();
         }
 
-        // Handle calendar day click for manual editing
         function handleCalendarDayClick(date, dayElement) {
-            const dateKey = formatDateKey(date);
-            
-            // Find existing workout for this date
-            const existingWorkoutIndex = workoutLog.findIndex(workout => {
+            const existingWorkouts = workoutLog.filter(workout => {
                 const workoutDate = new Date(workout.date);
                 return isSameDate(workoutDate, date);
             });
             
-            if (existingWorkoutIndex !== -1) {
-                // Remove workout
-                workoutLog.splice(existingWorkoutIndex, 1);
-                dayElement.classList.remove('completed');
-                
-                // Add rest day styling if it's a past day
-                if (date < new Date() && !isToday(date)) {
-                    dayElement.classList.add('rest');
-                }
-                
-                // Play removal sound
-                playBeep(400, 200);
-                
-                // Show visual feedback
-                showEditFeedback(dayElement, '❌', '#EF4444');
-            } else {
-                // Add workout
-                const newWorkout = {
-                    date: date.toISOString(),
-                    time: 'Manual Entry',
-                    duration: '15 minutes',
-                    cycles: 5,
-                    manual: true
-                };
-                
-                // Insert in chronological order (newest first)
-                const insertIndex = workoutLog.findIndex(workout => {
-                    const workoutDate = new Date(workout.date);
-                    return date > workoutDate;
+            if (existingWorkouts.length > 0) {
+                // Show menu to choose which workout to remove
+                let message = 'Remove workout from this day:\n\n';
+                existingWorkouts.forEach((w, i) => {
+                    message += `${i + 1}. ${w.type} (${w.duration})\n`;
                 });
+                message += '\nEnter number to remove (or cancel):';
                 
-                if (insertIndex === -1) {
-                    workoutLog.push(newWorkout);
-                } else {
-                    workoutLog.splice(insertIndex, 0, newWorkout);
+                const choice = prompt(message);
+                if (choice) {
+                    const index = parseInt(choice) - 1;
+                    if (index >= 0 && index < existingWorkouts.length) {
+                        const workoutToRemove = existingWorkouts[index];
+                        const logIndex = workoutLog.indexOf(workoutToRemove);
+                        workoutLog.splice(logIndex, 1);
+                        playBeep(400, 200);
+                        showEditFeedback(dayElement, '❌', '#EF4444');
+                    }
                 }
+            } else {
+                // Add new workout - ask which type
+                const type = prompt('Add workout:\n1. AM1 (3-Phase)\n2. AM3 (Endurance)\n\nEnter 1 or 2:');
                 
-                dayElement.classList.remove('rest');
-                dayElement.classList.add('completed');
-                
-                // Play success sound
-                playBeep(800, 200);
-                
-                // Show visual feedback
-                showEditFeedback(dayElement, '✅', '#10B981');
+                if (type === '1' || type === '2') {
+                    const workoutType = type === '1' ? 'AM1' : 'AM3';
+                    const duration = type === '1' ? '15 minutes' : '15 minutes';
+                    
+                    const newWorkout = {
+                        date: date.toISOString(),
+                        time: 'Manual Entry',
+                        duration: duration,
+                        type: workoutType,
+                        manual: true
+                    };
+                    
+                    const insertIndex = workoutLog.findIndex(workout => {
+                        const workoutDate = new Date(workout.date);
+                        return date > workoutDate;
+                    });
+                    
+                    if (insertIndex === -1) {
+                        workoutLog.push(newWorkout);
+                    } else {
+                        workoutLog.splice(insertIndex, 0, newWorkout);
+                    }
+                    
+                    playBeep(800, 200);
+                    showEditFeedback(dayElement, '✅', '#10B981');
+                }
             }
             
-            // Save changes and update displays
             saveWorkoutLog();
             updateScheduleStatus();
+            updateCalendar();
             
-            // Update log display if it's currently shown
-            if (logSection.classList.contains('show')) {
+            if (document.getElementById('logSection').classList.contains('show')) {
                 updateLogDisplay();
             }
         }
-        
-        // Enhanced visual feedback when editing calendar
+
         function showEditFeedback(dayElement, icon, color) {
             const feedback = document.createElement('div');
             feedback.textContent = icon;
@@ -1311,7 +1709,6 @@
                 animation: feedbackPop 0.8s ease-out forwards;
             `;
             
-            // Add animation keyframes if not already added
             if (!document.getElementById('feedbackAnimation')) {
                 const style = document.createElement('style');
                 style.id = 'feedbackAnimation';
@@ -1327,551 +1724,49 @@
             
             dayElement.style.position = 'relative';
             dayElement.appendChild(feedback);
-            
-            // Remove feedback after animation
             setTimeout(() => {
-                if (feedback.parentNode) {
-                    feedback.parentNode.removeChild(feedback);
-                }
+                if (feedback.parentNode) feedback.parentNode.removeChild(feedback);
             }, 800);
         }
 
-        // Format time helper
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // Update timer function
-        function updateTimer() {
-            if (!sessionStartTime) return;
+        // Schedule Status
+        function updateScheduleStatus() {
+            let status, message, className;
+            const statusElement = currentTab === 'am1' ? document.getElementById('am1Status') : document.getElementById('am3Status');
             
-            const currentTime = Date.now();
-            const elapsedTime = Math.floor((currentTime - sessionStartTime - totalPausedTime) / 1000);
-            const remainingTime_calc = Math.max(0, (sessionDuration / 1000) - elapsedTime);
+            const todayWorkouts = workoutLog.filter(workout => {
+                const workoutDate = new Date(workout.date);
+                return isToday(workoutDate);
+            });
             
-            totalTime = elapsedTime;
-            
-            // Calculate phase time
-            const phaseElapsed = Math.floor((currentTime - phaseStartTime - totalPausedTime) / 1000);
-            phaseTime = phaseElapsed;
-            
-            // Check for phase change
-            const currentPhaseData = phases.find(p => p.id === currentPhase);
-            if (phaseElapsed >= currentPhaseData.duration) {
-                // Phase complete - play sound and move to next phase
-                playBeep(1000, 300);
-                
-                const nextPhase = currentPhase === 3 ? 1 : currentPhase + 1;
-                const nextPhaseData = phases.find(p => p.id === nextPhase);
-                
-                currentPhase = nextPhase;
-                phaseStartTime = currentTime;
-                phaseTime = 0;
-                
-                // Announce the next phase
-                setTimeout(() => {
-                    speakPhase(nextPhaseData.name);
-                }, 100);
-            }
-            
-            // Check if workout is complete
-            if (remainingTime_calc <= 0) {
-                clearInterval(timerInterval);
-                
-                // Workout complete - log it and play special completion sound
-                const completedWorkout = {
-                    date: new Date().toISOString(),
-                    time: new Date().toLocaleTimeString(),
-                    duration: '15 minutes',
-                    cycles: 5
-                };
-                workoutLog.unshift(completedWorkout);
-                saveWorkoutLog();
-                
-                playBeep(1200, 500, 'completion');
-                isRunning = false;
-                releaseWakeLock(); // Release wake lock when workout completes
-                
-                completionBanner.style.display = 'block';
-                updateCalendar(); // Update calendar to show new completion
-                
-                // Celebrate with confetti effect
-                createConfetti();
-            }
-            
-            updateUI();
-        }
-
-        // Confetti celebration effect
-        function createConfetti() {
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.style.cssText = `
-                    position: fixed;
-                    top: -10px;
-                    left: ${Math.random() * 100}%;
-                    width: ${Math.random() * 6 + 4}px;
-                    height: ${Math.random() * 6 + 4}px;
-                    background: ${['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7'][Math.floor(Math.random() * 5)]};
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 10000;
-                    animation: confettiFall ${Math.random() * 2 + 2}s linear forwards;
-                `;
-                
-                document.body.appendChild(confetti);
-                
-                setTimeout(() => {
-                    if (confetti.parentNode) {
-                        confetti.parentNode.removeChild(confetti);
-                    }
-                }, 4000);
-            }
-            
-            // Add confetti animation if not exists
-            if (!document.getElementById('confettiAnimation')) {
-                const style = document.createElement('style');
-                style.id = 'confettiAnimation';
-                style.textContent = `
-                    @keyframes confettiFall {
-                        to {
-                            transform: translateY(calc(100vh + 20px)) rotate(720deg);
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-
-        // Update UI function
-        function updateUI() {
-            const currentPhaseData = phases.find(p => p.id === currentPhase);
-            const remainingTime_calc = Math.max(0, (sessionDuration / 1000) - totalTime);
-            const phaseRemaining = Math.max(0, currentPhaseData.duration - phaseTime);
-            
-            // Update phase display
-            phaseDisplay.className = `phase-display ${currentPhaseData.color}`;
-            phaseDisplay.querySelector('.phase-name').textContent = currentPhaseData.name;
-            phaseDisplay.querySelector('.phase-info').textContent = `Phase ${currentPhase} of 3`;
-            phaseTime_el.textContent = formatTime(phaseRemaining);
-            
-            // Update progress bars
-            const phaseProgress_pct = (phaseTime / currentPhaseData.duration) * 100;
-            phaseProgress.style.width = `${Math.min(phaseProgress_pct, 100)}%`;
-            phaseProgress.className = `progress-fill ${currentPhaseData.color}`;
-            
-            const totalProgress_pct = (totalTime / (sessionDuration / 1000)) * 100;
-            totalProgress.style.width = `${Math.min(totalProgress_pct, 100)}%`;
-            
-            // Update remaining time
-            remainingTime.textContent = `${formatTime(remainingTime_calc)} remaining`;
-            
-            // Update start button
-            if (isRunning) {
-                startBtn.innerHTML = `
-                    <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    Pause
-                `;
-                startBtn.className = 'btn btn-warning';
+            if (todayWorkouts.length === 0) {
+                status = currentTab === 'am1' ? '🔥 AM1 Ready' : '🔥 AM3 Ready';
+                message = 'Ready to dominate your workout!';
+                className = 'workout';
             } else {
-                const buttonText = sessionStartTime ? 'Resume' : 'Start';
-                startBtn.innerHTML = `
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    ${buttonText}
-                `;
-                startBtn.className = 'btn btn-primary';
-            }
-            
-            // Update completion state
-            const isWorkoutComplete = totalTime >= (sessionDuration / 1000);
-            startBtn.disabled = isWorkoutComplete;
-            
-            // Update phase schedule highlighting
-            document.getElementById('slowSchedule').classList.toggle('active', currentPhase === 1);
-            document.getElementById('normalSchedule').classList.toggle('active', currentPhase === 2);
-            document.getElementById('fastSchedule').classList.toggle('active', currentPhase === 3);
-            
-            document.getElementById('slowLabel').style.color = currentPhase === 1 ? 'var(--text-primary)' : 'var(--text-muted)';
-            document.getElementById('normalLabel').style.color = currentPhase === 2 ? 'var(--text-primary)' : 'var(--text-muted)';
-            document.getElementById('fastLabel').style.color = currentPhase === 3 ? 'var(--text-primary)' : 'var(--text-muted)';
-            
-            document.getElementById('slowLabel').style.fontWeight = currentPhase === 1 ? '700' : '400';
-            document.getElementById('normalLabel').style.fontWeight = currentPhase === 2 ? '700' : '400';
-            document.getElementById('fastLabel').style.fontWeight = currentPhase === 3 ? '700' : '400';
-            
-            // Update pause banner
-            if (sessionStartTime && !isRunning && sessionPauseTime) {
-                pauseBanner.style.display = 'block';
-            } else {
-                pauseBanner.style.display = 'none';
-            }
-            
-            // Update schedule status
-            updateScheduleStatus();
-        }
-
-        // Start timer
-        function startTimer() {
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 100);
-        }
-
-        // Handle start/pause button
-        function handleStart() {
-            if (!isRunning) {
-                if (!sessionStartTime) {
-                    // Start new session
-                    const now = Date.now();
-                    sessionStartTime = now;
-                    phaseStartTime = now;
-                    sessionPauseTime = null;
-                    totalPausedTime = 0;
-                    currentPhase = 1;
-                    phaseTime = 0;
-                    totalTime = 0;
-                    
-                    playBeep(600, 150);
-                    
-                    // Announce the starting phase
-                    setTimeout(() => {
-                        speakPhase('slow');
-                    }, 200);
-                    
-                    completionBanner.style.display = 'none';
-                } else if (sessionPauseTime) {
-                    // Resume from pause
-                    const now = Date.now();
-                    totalPausedTime += now - sessionPauseTime;
-                    sessionPauseTime = null;
-                }
-                
-                isRunning = true;
-                requestWakeLock(); // Keep screen on during workout
-                startTimer();
-            } else {
-                // Pause
-                isRunning = false;
-                sessionPauseTime = Date.now();
-                clearInterval(timerInterval);
-                releaseWakeLock(); // Allow screen to turn off when paused
-                playBeep(400, 150);
-            }
-            
-            updateUI();
-        }
-
-        // Handle reset button
-        function handleReset() {
-            isRunning = false;
-            clearInterval(timerInterval);
-            sessionStartTime = null;
-            sessionPauseTime = null;
-            totalPausedTime = 0;
-            phaseStartTime = null;
-            currentPhase = 1;
-            phaseTime = 0;
-            totalTime = 0;
-            playBeep(300, 100);
-            
-            releaseWakeLock(); // Release wake lock when resetting
-            
-            completionBanner.style.display = 'none';
-            pauseBanner.style.display = 'none';
-            
-            updateUI();
-        }
-
-        // Handle sound toggle
-        function handleSoundToggle() {
-            soundEnabled = !soundEnabled;
-            
-            if (soundEnabled) {
-                soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
-                soundBtn.className = 'btn btn-icon btn-blue';
-            } else {
-                soundIcon.innerHTML = '<path d="m9 9 3 3m0-3-3 3m-6-6v6h4l5 4V5L7 9H1Z"/><path d="m15 9 6 6m0-6-6 6"/>';
-                soundBtn.className = 'btn btn-icon btn-secondary';
-            }
-            
-            // Play confirmation sound
-            if (soundEnabled) {
-                playBeep(800, 200);
-            }
-            
-            // Save setting
-            safeSetItem('am1SoundEnabled', soundEnabled.toString());
-        }
-
-        // Handle section toggles with smooth animations
-        function toggleSection(section, btn) {
-            const isShowing = section.classList.contains('show');
-            
-            // Close all sections first
-            document.querySelectorAll('.expandable-section').forEach(s => s.classList.remove('show'));
-            
-            if (!isShowing) {
-                section.classList.add('show');
-                // Update specific displays when opening
-                if (section === calendarSection) {
-                    updateCalendar();
-                } else if (section === logSection) {
-                    updateLogDisplay();
-                } else if (section === backupSection) {
-                    updateDataSummary();
+                const hasCurrentType = todayWorkouts.some(w => w.type === (currentTab === 'am1' ? 'AM1' : 'AM3'));
+                if (hasCurrentType) {
+                    status = '🏆 Mission Complete';
+                    message = 'Outstanding work today!';
+                    className = 'rest';
+                } else {
+                    status = currentTab === 'am1' ? '💪 AM1 Time' : '💪 AM3 Time';
+                    message = 'Switch it up with this workout!';
+                    className = 'workout';
                 }
             }
             
-            playBeep(600, 100);
+            statusElement.querySelector('.schedule-title').textContent = status;
+            statusElement.querySelector('.schedule-message').textContent = message;
+            statusElement.className = `status-card ${className}`;
         }
 
-        // Handle calendar toggle
-        function handleCalendarToggle() {
-            toggleSection(calendarSection, calendarBtn);
-        }
-
-        // Handle log toggle
-        function handleLogToggle() {
-            toggleSection(logSection, logBtn);
-        }
-
-        // Handle backup toggle
-        function handleBackupToggle() {
-            toggleSection(backupSection, backupBtn);
-        }
-
-        // Update data summary
-        function updateDataSummary() {
-            const totalWorkouts = workoutLog.length;
-            const manualEntries = workoutLog.filter(w => w.manual).length;
-            const timerEntries = totalWorkouts - manualEntries;
-            const oldestWorkout = workoutLog.length > 0 ? 
-                new Date(Math.min(...workoutLog.map(w => new Date(w.date)))).toLocaleDateString() : 'None';
-            const newestWorkout = workoutLog.length > 0 ? 
-                new Date(Math.max(...workoutLog.map(w => new Date(w.date)))).toLocaleDateString() : 'None';
-
-            dataSummary.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <div>Total Workouts: <strong>${totalWorkouts}</strong></div>
-                    <div>Timer Sessions: <strong>${timerEntries}</strong></div>
-                    <div>Manual Entries: <strong>${manualEntries}</strong></div>
-                    <div>Sound: <strong>${soundEnabled ? 'On' : 'Off'}</strong></div>
-                </div>
-                ${totalWorkouts > 0 ? `<div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">Range: ${oldestWorkout} → ${newestWorkout}</div>
-                </div>` : ''}
-            `;
-        }
-
-        // Show status message with enhanced styling
-        function showBackupStatus(message, type = 'info') {
-            const colors = {
-                success: { bg: 'rgba(16, 185, 129, 0.2)', border: 'rgba(16, 185, 129, 0.5)', text: '#10b981' },
-                error: { bg: 'rgba(239, 68, 68, 0.2)', border: 'rgba(239, 68, 68, 0.5)', text: '#ef4444' },
-                info: { bg: 'rgba(59, 130, 246, 0.2)', border: 'rgba(59, 130, 246, 0.5)', text: '#3b82f6' }
-            };
-            
-            const color = colors[type];
-            backupStatus.style.cssText = `
-                display: block;
-                background: ${color.bg};
-                border: 1px solid ${color.border};
-                color: ${color.text};
-                backdrop-filter: blur(10px);
-                box-shadow: 0 0 20px ${color.border};
-            `;
-            backupStatus.textContent = message;
-            
-            setTimeout(() => {
-                backupStatus.style.display = 'none';
-            }, 4000);
-        }
-
-        // Export data to JSON
-        function handleExportData() {
-            try {
-                const exportData = {
-                    version: '2.0',
-                    exportDate: new Date().toISOString(),
-                    appName: 'AM1 Elite Workout Timer',
-                    workoutLog: workoutLog,
-                    settings: {
-                        soundEnabled: soundEnabled
-                    },
-                    stats: {
-                        totalWorkouts: workoutLog.length,
-                        manualEntries: workoutLog.filter(w => w.manual).length,
-                        firstWorkout: workoutLog.length > 0 ? Math.min(...workoutLog.map(w => new Date(w.date))) : null,
-                        lastWorkout: workoutLog.length > 0 ? Math.max(...workoutLog.map(w => new Date(w.date))) : null
-                    }
-                };
-                
-                const dataStr = JSON.stringify(exportData, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(dataBlob);
-                link.download = `AM1_Elite_Backup_${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-                
-                URL.revokeObjectURL(link.href);
-                showBackupStatus('Data exported successfully! 🎉', 'success');
-                playBeep(800, 200);
-            } catch (error) {
-                showBackupStatus('Export failed: ' + error.message, 'error');
-                playBeep(300, 500);
-            }
-        }
-
-        // Download raw JSON
-        function handleDownloadJson() {
-            try {
-                const rawData = {
-                    workoutLog: workoutLog,
-                    soundEnabled: soundEnabled,
-                    exportDate: new Date().toISOString()
-                };
-                
-                const dataStr = JSON.stringify(rawData, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(dataBlob);
-                link.download = `AM1_Raw_Data_${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-                
-                URL.revokeObjectURL(link.href);
-                showBackupStatus('Raw JSON downloaded! 📋', 'success');
-            } catch (error) {
-                showBackupStatus('Download failed: ' + error.message, 'error');
-            }
-        }
-
-        // Import data from file
-        function handleImportData() {
-            importFileInput.click();
-        }
-
-        // Process imported file
-        function processImportFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    
-                    // Validate the data structure
-                    if (importedData.workoutLog && Array.isArray(importedData.workoutLog)) {
-                        // Merge with existing data or replace
-                        const mergeData = confirm('Merge with existing data? (Cancel to replace all data)');
-                        
-                        if (mergeData) {
-                            // Merge workouts, avoiding duplicates
-                            const existingDates = new Set(workoutLog.map(w => formatDateKey(new Date(w.date))));
-                            const newWorkouts = importedData.workoutLog.filter(w => 
-                                !existingDates.has(formatDateKey(new Date(w.date)))
-                            );
-                            
-                            workoutLog.push(...newWorkouts);
-                            workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
-                            
-                            showBackupStatus(`Merged ${newWorkouts.length} new workouts! 🔄`, 'success');
-                        } else {
-                            // Replace all data
-                            workoutLog = importedData.workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
-                            showBackupStatus(`Imported ${workoutLog.length} workouts! ✨`, 'success');
-                        }
-                        
-                        // Import settings if available
-                        if (importedData.settings) {
-                            if (typeof importedData.settings.soundEnabled === 'boolean') {
-                                soundEnabled = importedData.settings.soundEnabled;
-                                safeSetItem('am1SoundEnabled', soundEnabled.toString());
-                                
-                                // Update sound button
-                                if (soundEnabled) {
-                                    soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
-                                    soundBtn.className = 'btn btn-icon btn-blue';
-                                } else {
-                                    soundIcon.innerHTML = '<path d="m9 9 3 3m0-3-3 3m-6-6v6h4l5 4V5L7 9H1Z"/><path d="m15 9 6 6m0-6-6 6"/>';
-                                    soundBtn.className = 'btn btn-icon btn-secondary';
-                                }
-                            }
-                        }
-                        
-                        // Save and update displays
-                        saveWorkoutLog();
-                        updateCalendar();
-                        updateScheduleStatus();
-                        updateDataSummary();
-                        
-                        if (logSection.classList.contains('show')) {
-                            updateLogDisplay();
-                        }
-                        
-                        playBeep(1000, 300);
-                        
-                    } else {
-                        showBackupStatus('Invalid file format. Please select a valid backup file. ⚠️', 'error');
-                        playBeep(300, 500);
-                    }
-                } catch (error) {
-                    showBackupStatus('Import failed: ' + error.message, 'error');
-                    playBeep(300, 500);
-                }
-            };
-            
-            reader.readAsText(file);
-            event.target.value = ''; // Reset file input
-        }
-
-        // Clear all data
-        function handleClearData() {
-            const confirmation = prompt(
-                '⚠️ DANGER ZONE ⚠️\n\n' +
-                'This will permanently delete ALL your workout data!\n' +
-                'This action cannot be undone.\n\n' +
-                'Type "DELETE EVERYTHING" to confirm:'
-            );
-            
-            if (confirmation === 'DELETE EVERYTHING') {
-                workoutLog = [];
-                soundEnabled = true;
-                
-                // Clear storage
-                try {
-                    localStorage.removeItem('am1WorkoutLog');
-                    localStorage.removeItem('am1SoundEnabled');
-                } catch (e) {
-                    tempStorage = {};
-                }
-                
-                // Reset UI
-                updateCalendar();
-                updateScheduleStatus();
-                updateDataSummary();
-                
-                if (logSection.classList.contains('show')) {
-                    updateLogDisplay();
-                }
-                
-                // Reset sound button
-                soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
-                soundBtn.className = 'btn btn-icon btn-blue';
-                
-                showBackupStatus('All data cleared successfully! 🗑️', 'success');
-                playBeep(400, 300);
-            } else if (confirmation !== null) {
-                showBackupStatus('Clear cancelled - safety confirmation failed. ❌', 'error');
-            }
-        }
-
-        // Update log display with enhanced styling
+        // Log Display
         function updateLogDisplay() {
-            logCount.textContent = `${workoutLog.length} sessions`;
+            document.getElementById('logCount').textContent = `${workoutLog.length} sessions`;
+            
+            const logEmpty = document.getElementById('logEmpty');
+            const logItems = document.getElementById('logItems');
             
             if (workoutLog.length === 0) {
                 logEmpty.style.display = 'block';
@@ -1879,8 +1774,8 @@
             } else {
                 logEmpty.style.display = 'none';
                 logItems.style.display = 'flex';
-                
                 logItems.innerHTML = '';
+                
                 workoutLog.forEach((workout, index) => {
                     const workoutDate = new Date(workout.date);
                     const item = document.createElement('div');
@@ -1910,10 +1805,11 @@
                     
                     const timeDisplay = workout.manual ? 'Manual Entry' : workout.time;
                     const manualIndicator = workout.manual ? ' 🖊️' : ' ⏱️';
+                    const typeIndicator = workout.type === 'AM1' ? ' [AM1]' : ' [AM3]';
                     
                     item.innerHTML = `
                         <div>
-                            <div style="font-weight: 600; margin-bottom: 0.25rem;">${workoutDate.toLocaleDateString()}${manualIndicator}</div>
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">${workoutDate.toLocaleDateString()}${manualIndicator}${typeIndicator}</div>
                             <div style="font-size: 0.9rem; color: var(--text-secondary);">${timeDisplay}</div>
                         </div>
                         <div style="text-align: right;">
@@ -1926,14 +1822,13 @@
             }
         }
 
-        // Save workout log
+        // Data Management
         function saveWorkoutLog() {
-            safeSetItem('am1WorkoutLog', JSON.stringify(workoutLog));
+            safeSetItem('amWorkoutLog', JSON.stringify(workoutLog));
         }
 
-        // Load workout log
         function loadWorkoutLog() {
-            const savedLog = safeGetItem('am1WorkoutLog');
+            const savedLog = safeGetItem('amWorkoutLog');
             if (savedLog) {
                 try {
                     workoutLog = JSON.parse(savedLog);
@@ -1943,112 +1838,266 @@
             }
         }
 
-        // Update schedule status
-        function updateScheduleStatus() {
-            let status, message, className;
+        function updateDataSummary() {
+            const totalWorkouts = workoutLog.length;
+            const am1Count = workoutLog.filter(w => w.type === 'AM1').length;
+            const am3Count = workoutLog.filter(w => w.type === 'AM3').length;
+            const manualEntries = workoutLog.filter(w => w.manual).length;
             
-            if (workoutLog.length === 0) {
-                status = '💪 Ready to Dominate';
-                message = 'Your first elite workout awaits!';
-                className = 'workout';
-            } else {
-                const lastWorkout = workoutLog[0];
-                const lastWorkoutDate = new Date(lastWorkout.date);
-                const today = new Date();
-                
-                const isTodayWorkout = isSameDate(lastWorkoutDate, today);
-                
-                if (isTodayWorkout) {
-                    status = '🏆 Mission Complete';
-                    message = 'Outstanding work today! Time to recover and recharge.';
-                    className = 'rest';
-                } else {
-                    status = '🔥 Time to Crush It';
-                    message = 'Ready to unleash your potential!';
-                    className = 'workout';
-                }
-            }
-            
-            scheduleStatus.querySelector('.schedule-title').textContent = status;
-            scheduleStatus.querySelector('.schedule-message').textContent = message;
-            scheduleStatus.className = `status-card ${className}`;
+            document.getElementById('dataSummary').innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <div>Total Workouts: <strong>${totalWorkouts}</strong></div>
+                    <div>AM1 Sessions: <strong>${am1Count}</strong></div>
+                    <div>AM3 Sessions: <strong>${am3Count}</strong></div>
+                    <div>Manual Entries: <strong>${manualEntries}</strong></div>
+                </div>
+            `;
         }
 
-        // Load saved settings
+        function showBackupStatus(message, type = 'info') {
+            const colors = {
+                success: { bg: 'rgba(16, 185, 129, 0.2)', border: 'rgba(16, 185, 129, 0.5)', text: '#10b981' },
+                error: { bg: 'rgba(239, 68, 68, 0.2)', border: 'rgba(239, 68, 68, 0.5)', text: '#ef4444' },
+                info: { bg: 'rgba(59, 130, 246, 0.2)', border: 'rgba(59, 130, 246, 0.5)', text: '#3b82f6' }
+            };
+            
+            const color = colors[type];
+            const backupStatus = document.getElementById('backupStatus');
+            backupStatus.style.cssText = `
+                display: block;
+                background: ${color.bg};
+                border: 1px solid ${color.border};
+                color: ${color.text};
+                backdrop-filter: blur(10px);
+                box-shadow: 0 0 20px ${color.border};
+                padding: 1rem;
+                border-radius: 12px;
+                font-size: 0.9rem;
+            `;
+            backupStatus.textContent = message;
+            setTimeout(() => backupStatus.style.display = 'none', 4000);
+        }
+
+        function handleExportData() {
+            try {
+                const exportData = {
+                    version: '3.0',
+                    exportDate: new Date().toISOString(),
+                    appName: 'AM Elite Workout Timer',
+                    workoutLog: workoutLog,
+                    settings: { soundEnabled: soundEnabled }
+                };
+                
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `AM_Elite_Backup_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                showBackupStatus('Data exported successfully! 🎉', 'success');
+                playBeep(800, 200);
+            } catch (error) {
+                showBackupStatus('Export failed: ' + error.message, 'error');
+            }
+        }
+
+        function handleImportData() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function processImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (importedData.workoutLog && Array.isArray(importedData.workoutLog)) {
+                        const mergeData = confirm('Merge with existing data? (Cancel to replace all data)');
+                        
+                        if (mergeData) {
+                            const existingDates = new Set(workoutLog.map(w => formatDateKey(new Date(w.date)) + w.type));
+                            const newWorkouts = importedData.workoutLog.filter(w => 
+                                !existingDates.has(formatDateKey(new Date(w.date)) + w.type)
+                            );
+                            workoutLog.push(...newWorkouts);
+                            workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
+                            showBackupStatus(`Merged ${newWorkouts.length} new workouts! 🔄`, 'success');
+                        } else {
+                            workoutLog = importedData.workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
+                            showBackupStatus(`Imported ${workoutLog.length} workouts! ✨`, 'success');
+                        }
+                        
+                        if (importedData.settings && typeof importedData.settings.soundEnabled === 'boolean') {
+                            soundEnabled = importedData.settings.soundEnabled;
+                            safeSetItem('amSoundEnabled', soundEnabled.toString());
+                            updateSoundButton();
+                        }
+                        
+                        saveWorkoutLog();
+                        updateCalendar();
+                        updateScheduleStatus();
+                        updateDataSummary();
+                        if (document.getElementById('logSection').classList.contains('show')) {
+                            updateLogDisplay();
+                        }
+                        playBeep(1000, 300);
+                    } else {
+                        showBackupStatus('Invalid file format!', 'error');
+                    }
+                } catch (error) {
+                    showBackupStatus('Import failed: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function handleClearData() {
+            const confirmation = prompt('⚠️ DANGER ZONE ⚠️\n\nThis will permanently delete ALL your workout data!\nType "DELETE EVERYTHING" to confirm:');
+            
+            if (confirmation === 'DELETE EVERYTHING') {
+                workoutLog = [];
+                soundEnabled = true;
+                try {
+                    localStorage.removeItem('amWorkoutLog');
+                    localStorage.removeItem('amSoundEnabled');
+                } catch (e) {
+                    tempStorage = {};
+                }
+                updateCalendar();
+                updateScheduleStatus();
+                updateDataSummary();
+                if (document.getElementById('logSection').classList.contains('show')) {
+                    updateLogDisplay();
+                }
+                updateSoundButton();
+                showBackupStatus('All data cleared! 🗑️', 'success');
+            }
+        }
+
+        function handleDownloadJson() {
+            try {
+                const rawData = {
+                    workoutLog: workoutLog,
+                    soundEnabled: soundEnabled,
+                    exportDate: new Date().toISOString()
+                };
+                const dataStr = JSON.stringify(rawData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `AM_Raw_Data_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                showBackupStatus('Raw JSON downloaded! 📋', 'success');
+            } catch (error) {
+                showBackupStatus('Download failed: ' + error.message, 'error');
+            }
+        }
+
+        function handleSoundToggle() {
+            soundEnabled = !soundEnabled;
+            updateSoundButton();
+            if (soundEnabled) playBeep(800, 200);
+            safeSetItem('amSoundEnabled', soundEnabled.toString());
+        }
+
+        function updateSoundButton() {
+            const soundIcon = document.getElementById('soundIcon');
+            const soundBtn = document.getElementById('soundBtn');
+            if (soundEnabled) {
+                soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+                soundBtn.className = 'btn btn-icon btn-blue';
+            } else {
+                soundIcon.innerHTML = '<path d="m9 9 3 3m0-3-3 3m-6-6v6h4l5 4V5L7 9H1Z"/><path d="m15 9 6 6m0-6-6 6"/>';
+                soundBtn.className = 'btn btn-icon btn-secondary';
+            }
+        }
+
+        function toggleSection(section) {
+            const isShowing = section.classList.contains('show');
+            document.querySelectorAll('.expandable-section').forEach(s => s.classList.remove('show'));
+            
+            if (!isShowing) {
+                section.classList.add('show');
+                if (section === document.getElementById('calendarSection')) {
+                    updateCalendar();
+                } else if (section === document.getElementById('logSection')) {
+                    updateLogDisplay();
+                } else if (section === document.getElementById('backupSection')) {
+                    updateDataSummary();
+                }
+            }
+            playBeep(600, 100);
+        }
+
         function loadSettings() {
-            const savedSound = safeGetItem('am1SoundEnabled');
+            const savedSound = safeGetItem('amSoundEnabled');
             if (savedSound !== null) {
                 soundEnabled = savedSound === 'true';
-                if (!soundEnabled) {
-                    soundIcon.innerHTML = '<path d="m9 9 3 3m0-3-3 3m-6-6v6h4l5 4V5L7 9H1Z"/><path d="m15 9 6 6m0-6-6 6"/>';
-                    soundBtn.className = 'btn btn-icon btn-secondary';
-                }
+                updateSoundButton();
             }
         }
 
-        // Initialize app with enhanced startup
+        // Initialize
         function init() {
-            // Create floating particles
             createParticles();
-            
-            // Load data and settings
             loadSettings();
             loadWorkoutLog();
-            updateUI();
+            updateAM1UI();
+            updateAM3UI();
             updateScheduleStatus();
             generateCalendar();
             
-            // Add event listeners
-            startBtn.addEventListener('click', handleStart);
-            resetBtn.addEventListener('click', handleReset);
-            soundBtn.addEventListener('click', handleSoundToggle);
-            calendarBtn.addEventListener('click', handleCalendarToggle);
-            logBtn.addEventListener('click', handleLogToggle);
-            backupBtn.addEventListener('click', handleBackupToggle);
-            exportBtn.addEventListener('click', handleExportData);
-            importBtn.addEventListener('click', handleImportData);
-            clearDataBtn.addEventListener('click', handleClearData);
-            downloadJsonBtn.addEventListener('click', handleDownloadJson);
-            importFileInput.addEventListener('change', processImportFile);
-            prevMonth.addEventListener('click', () => handleCalendarNav('prev'));
-            nextMonth.addEventListener('click', () => handleCalendarNav('next'));
+            // Tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
             
-            // Add keyboard shortcuts
+            // AM1 controls
+            document.getElementById('am1StartBtn').addEventListener('click', handleAM1Start);
+            document.getElementById('am1ResetBtn').addEventListener('click', handleAM1Reset);
+            
+            // AM3 controls
+            document.getElementById('am3StartBtn').addEventListener('click', handleAM3Start);
+            document.getElementById('am3ResetBtn').addEventListener('click', handleAM3Reset);
+            document.querySelectorAll('.duration-btn').forEach(btn => {
+                btn.addEventListener('click', () => handleAM3DurationChange(parseInt(btn.dataset.duration)));
+            });
+            
+            // Shared controls
+            document.getElementById('soundBtn').addEventListener('click', handleSoundToggle);
+            document.getElementById('calendarBtn').addEventListener('click', () => toggleSection(document.getElementById('calendarSection')));
+            document.getElementById('logBtn').addEventListener('click', () => toggleSection(document.getElementById('logSection')));
+            document.getElementById('backupBtn').addEventListener('click', () => toggleSection(document.getElementById('backupSection')));
+            document.getElementById('exportBtn').addEventListener('click', handleExportData);
+            document.getElementById('importBtn').addEventListener('click', handleImportData);
+            document.getElementById('clearDataBtn').addEventListener('click', handleClearData);
+            document.getElementById('downloadJsonBtn').addEventListener('click', handleDownloadJson);
+            document.getElementById('importFileInput').addEventListener('change', processImportFile);
+            document.getElementById('prevMonth').addEventListener('click', () => handleCalendarNav('prev'));
+            document.getElementById('nextMonth').addEventListener('click', () => handleCalendarNav('next'));
+            
+            // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space' && !e.target.matches('input, textarea, button')) {
                     e.preventDefault();
-                    handleStart();
+                    if (currentTab === 'am1') handleAM1Start();
+                    else handleAM3Start();
                 } else if (e.code === 'KeyR' && e.ctrlKey) {
                     e.preventDefault();
-                    handleReset();
-                } else if (e.code === 'KeyS' && e.ctrlKey) {
-                    e.preventDefault();
-                    handleSoundToggle();
+                    if (currentTab === 'am1') handleAM1Reset();
+                    else handleAM3Reset();
                 }
             });
             
-            // Add touch gestures for mobile
-            let touchStartY = 0;
-            document.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            });
-            
-            document.addEventListener('touchend', (e) => {
-                const touchEndY = e.changedTouches[0].clientY;
-                const diff = touchStartY - touchEndY;
-                
-                // Swipe up to start/pause (only on the main phase display)
-                if (Math.abs(diff) > 50 && e.target.closest('#phaseDisplay')) {
-                    if (diff > 0) { // Swipe up
-                        handleStart();
-                    }
-                }
-            });
-            
-            console.log('🔥 AM1 Elite Workout Timer initialized successfully!');
+            console.log('🔥 AM Elite Workout Timers initialized!');
         }
 
-        // Start the app when page loads
         window.addEventListener('load', init);
     </script>
 </body>
