@@ -198,7 +198,7 @@
         }
 
         .phase-name {
-            font-size: clamp(2rem, 8vw, 4rem);
+            font-size: clamp(3rem, 10vw, 6rem);
             font-weight: 900;
             margin-bottom: 1rem;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
@@ -627,6 +627,7 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -667,6 +668,7 @@
             }
         }
 
+        /* Enhanced Animations */
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -688,38 +690,32 @@
     </style>
 </head>
 <body>
+    <!-- Floating Particles Background -->
     <div class="floating-particles" id="particles"></div>
 
     <div class="container">
+        <!-- Header -->
         <div class="glass-card header">
             <h1>AM1</h1>
-            <p>Elite 14-Day Workout Program</p>
+            <p>Elite 3-Phase Workout Timer</p>
         </div>
 
+        <!-- Schedule Status -->
         <div id="scheduleStatus" class="status-card workout">
-            <div class="schedule-title" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">💪 Day 1 Workout</div>
-            <p class="schedule-message" style="color: var(--text-secondary);">30s Burst + 5×30s Pyramid - 3 min total</p>
-        </div>
-        
-        <div class="glass-card" style="padding: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-weight: 600; font-size: 0.9rem;">PROGRAM DAY:</span>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button id="prevDay" class="btn btn-secondary" style="padding: 0.5rem 1rem;">◀</button>
-                    <span id="currentDayDisplay" style="font-size: 1.2rem; font-weight: 700; min-width: 60px; text-align: center;">Day 1</span>
-                    <button id="nextDay" class="btn btn-secondary" style="padding: 0.5rem 1rem;">▶</button>
-                </div>
-            </div>
+            <div class="schedule-title" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">💪 Workout Day</div>
+            <p class="schedule-message" style="color: var(--text-secondary);">Ready to start your first workout!</p>
         </div>
 
+        <!-- Current Phase Display -->
         <div id="phaseDisplay" class="phase-display slow">
             <div class="phase-display-content">
-                <div class="phase-name">BURST EXPANSION</div>
-                <div class="phase-info">Phase 1 of 6</div>
-                <div id="phaseTime" class="phase-time">00:30</div>
+                <div class="phase-name">SLOW</div>
+                <div class="phase-info">Phase 1 of 3</div>
+                <div id="phaseTime" class="phase-time">01:00</div>
             </div>
         </div>
 
+        <!-- Progress Bars -->
         <div class="glass-card progress-container">
             <div class="progress-bar">
                 <div id="phaseProgress" class="progress-fill slow" style="width: 0%"></div>
@@ -728,7 +724,7 @@
             <div class="workout-progress">
                 <div class="workout-progress-header">
                     <span>Total Workout Progress</span>
-                    <span id="remainingTime">03:00 remaining</span>
+                    <span id="remainingTime">20:00 remaining</span>
                 </div>
                 <div class="workout-progress-bar">
                     <div id="totalProgress" class="workout-progress-fill" style="width: 0%"></div>
@@ -736,6 +732,7 @@
             </div>
         </div>
 
+        <!-- Controls -->
         <div class="glass-card">
             <div class="controls">
                 <button id="startBtn" class="btn btn-primary">
@@ -766,6 +763,7 @@
             </div>
         </div>
 
+        <!-- Calendar Section -->
         <div id="calendarSection" class="expandable-section">
             <div class="glass-card">
                 <div class="section-header">
@@ -776,7 +774,9 @@
                     </div>
                 </div>
                 
-                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated here -->
+                </div>
 
                 <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; font-size: 0.8rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -795,6 +795,7 @@
             </div>
         </div>
 
+        <!-- Workout Log -->
         <div id="logSection" class="expandable-section">
             <div class="glass-card">
                 <div class="section-header">
@@ -806,10 +807,13 @@
                     No workouts completed yet. Start your first session!
                 </div>
                 
-                <div id="logItems" style="display: none; flex-direction: column; gap: 1rem; max-height: 300px; overflow-y: auto;"></div>
+                <div id="logItems" style="display: none; flex-direction: column; gap: 1rem; max-height: 300px; overflow-y: auto;">
+                    <!-- Log items will be inserted here -->
+                </div>
             </div>
         </div>
 
+        <!-- Backup/Import Section -->
         <div id="backupSection" class="expandable-section">
             <div class="glass-card">
                 <div class="section-header">
@@ -838,7 +842,9 @@
                     
                     <input type="file" id="importFileInput" accept=".json,.txt" style="display: none;">
                     
-                    <div id="backupStatus" style="padding: 1rem; border-radius: 12px; font-size: 0.9rem; display: none; backdrop-filter: blur(10px);"></div>
+                    <div id="backupStatus" style="padding: 1rem; border-radius: 12px; font-size: 0.9rem; display: none; backdrop-filter: blur(10px);">
+                        <!-- Status messages will appear here -->
+                    </div>
                     
                     <div style="background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 12px; padding: 1rem; border: 1px solid var(--glass-border);">
                         <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;">Data Summary:</div>
@@ -850,34 +856,63 @@
             </div>
         </div>
 
-        <div class="glass-card phase-schedule">
+        <!-- Phase Schedule -->
+        <div class="phase-schedule">
             <div class="section-header">
-                <h3 class="section-title">Today's Program</h3>
+                <h3 class="section-title">Phase Schedule</h3>
             </div>
-            <div class="schedule-items" id="scheduleItemsContainer"></div>
+            <div class="schedule-items">
+                <div class="schedule-item active" id="slowSchedule">
+                    <div style="display: flex; align-items: center;">
+                        <div class="schedule-dot slow"></div>
+                        <span id="slowLabel" style="font-weight: 600;">SLOW</span>
+                    </div>
+                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
+                </div>
+                <div class="schedule-item" id="normalSchedule">
+                    <div style="display: flex; align-items: center;">
+                        <div class="schedule-dot normal"></div>
+                        <span id="normalLabel" style="color: var(--text-muted);">NORMAL</span>
+                    </div>
+                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
+                </div>
+                <div class="schedule-item" id="fastSchedule">
+                    <div style="display: flex; align-items: center;">
+                        <div class="schedule-dot fast"></div>
+                        <span id="fastLabel" style="color: var(--text-muted);">FAST</span>
+                    </div>
+                    <span style="color: var(--text-secondary); font-weight: 500;">01:00</span>
+                </div>
+            </div>
         </div>
 
+        <!-- Completion Banner -->
         <div id="completionBanner" class="completion-banner" style="display: none;">
             <div class="completion-title">🎉 Workout Complete!</div>
-            <p style="color: var(--text-secondary); font-size: 1.1rem;">Outstanding work finishing your AM1 session!</p>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Outstanding work finishing your 20-minute AM1 session!</p>
         </div>
 
+        <!-- Pause Banner -->
         <div id="pauseBanner" class="pause-banner" style="display: none;">
             <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">⏸️ Session Paused</div>
-            <p style="color: var(--text-secondary);">Your workout will resume exactly where you left off!</p>
+            <p style="color: var(--text-secondary);">Your workout will resume exactly where you left off when you hit Resume!</p>
         </div>
     </div>
 
     <script>
+        // Floating particles animation
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
+            
             for (let i = 0; i < 50; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
+                
                 const size = Math.random() * 4 + 1;
                 const left = Math.random() * 100;
                 const animationDuration = Math.random() * 10 + 10;
                 const animationDelay = Math.random() * 15;
+                
                 particle.style.cssText = `
                     width: ${size}px;
                     height: ${size}px;
@@ -885,10 +920,12 @@
                     animation-duration: ${animationDuration}s;
                     animation-delay: ${animationDelay}s;
                 `;
+                
                 particlesContainer.appendChild(particle);
             }
         }
 
+        // Safe storage wrapper with fallback
         let tempStorage = {};
         
         function safeSetItem(key, value) {
@@ -907,89 +944,30 @@
             }
         }
 
+        // Timer variables
         let timerInterval;
-        let sessionDuration = 3 * 60 * 1000;
+        let sessionDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
         let sessionStartTime = null;
         let sessionPauseTime = null;
         let totalPausedTime = 0;
         let phaseStartTime = null;
         let isRunning = false;
-        let currentPhase = 0;
+        let currentPhase = 1;
         let phaseTime = 0;
         let totalTime = 0;
         let soundEnabled = true;
         let workoutLog = [];
         let currentCalendarDate = new Date();
         let wakeLock = null;
-        let currentDayProgram = 1;
-        let currentPhases = [];
 
-        const programSchedule = {
-            1: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 30, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 30, sets: 5, color: 'normal' }
-                ],
-                totalTime: 3 * 60,
-                description: '30s Burst + 5×30s Pyramid'
-            },
-            2: { rest: true, description: 'Rest Day' },
-            3: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 30, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 30, sets: 8, color: 'normal' }
-                ],
-                totalTime: 4.5 * 60,
-                description: '30s Burst + 8×30s Pyramid'
-            },
-            4: { rest: true, description: 'Rest Day' },
-            5: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 60, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 300, sets: 1, color: 'normal' }
-                ],
-                totalTime: 6 * 60,
-                description: '1min Burst + 5min Pyramid'
-            },
-            6: { rest: true, description: 'Rest Day' },
-            7: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 120, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 300, sets: 2, color: 'normal' }
-                ],
-                totalTime: 12 * 60,
-                description: '2min Burst + 2×5min Pyramid'
-            },
-            8: { rest: true, description: 'Rest Day' },
-            9: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 180, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 300, sets: 3, color: 'normal' }
-                ],
-                totalTime: 18 * 60,
-                description: '3min Burst + 3×5min Pyramid'
-            },
-            10: { rest: true, description: 'Rest Day' },
-            11: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 240, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 300, sets: 4, color: 'normal' }
-                ],
-                totalTime: 24 * 60,
-                description: '4min Burst + 4×5min Pyramid'
-            },
-            12: { rest: true, description: 'Rest Day' },
-            13: { 
-                phases: [
-                    { name: 'BURST EXPANSION', duration: 300, sets: 1, color: 'slow' },
-                    { name: 'PYRAMID RUSH', duration: 300, sets: 5, color: 'normal' }
-                ],
-                totalTime: 30 * 60,
-                description: '5min Burst + 5×5min Pyramid'
-            },
-            14: { rest: true, description: 'Rest Day' }
-        };
+        // Phases configuration
+        const phases = [
+            { id: 1, name: 'SLOW', duration: 60, color: 'slow' },
+            { id: 2, name: 'NORMAL', duration: 60, color: 'normal' },
+            { id: 3, name: 'FAST', duration: 60, color: 'fast' }
+        ];
 
+        // DOM elements
         const startBtn = document.getElementById('startBtn');
         const resetBtn = document.getElementById('resetBtn');
         const soundBtn = document.getElementById('soundBtn');
@@ -1022,109 +1000,14 @@
         const prevMonth = document.getElementById('prevMonth');
         const nextMonth = document.getElementById('nextMonth');
         const calendarGrid = document.getElementById('calendarGrid');
-        const prevDay = document.getElementById('prevDay');
-        const nextDay = document.getElementById('nextDay');
-        const currentDayDisplay = document.getElementById('currentDayDisplay');
-        const scheduleItemsContainer = document.getElementById('scheduleItemsContainer');
 
-        function buildPhasesFromDay(dayNum) {
-            const program = programSchedule[dayNum];
-            if (!program || program.rest) {
-                return [];
-            }
-            const phases = [];
-            let phaseId = 0;
-            program.phases.forEach(phaseTemplate => {
-                for (let set = 0; set < phaseTemplate.sets; set++) {
-                    phases.push({
-                        id: phaseId++,
-                        name: phaseTemplate.name,
-                        duration: phaseTemplate.duration,
-                        color: phaseTemplate.color,
-                        setNumber: set + 1,
-                        totalSets: phaseTemplate.sets
-                    });
-                }
-            });
-            return phases;
-        }
-
-        function updateDayProgram(dayNum) {
-            currentDayProgram = dayNum;
-            currentPhases = buildPhasesFromDay(dayNum);
-            const program = programSchedule[dayNum];
-            if (program) {
-                sessionDuration = program.totalTime * 1000;
-            }
-            safeSetItem('am1CurrentDay', dayNum.toString());
-            updateScheduleDisplay();
-            updateScheduleItemsDisplay();
-            if (!isRunning) {
-                handleReset();
-            }
-        }
-
-        function handleDayNav(direction) {
-            let newDay = currentDayProgram;
-            if (direction === 'prev') {
-                newDay = currentDayProgram > 1 ? currentDayProgram - 1 : 14;
-            } else {
-                newDay = currentDayProgram < 14 ? currentDayProgram + 1 : 1;
-            }
-            updateDayProgram(newDay);
-            playBeep(600, 100);
-        }
-
-        function updateScheduleDisplay() {
-            const program = programSchedule[currentDayProgram];
-            currentDayDisplay.textContent = `Day ${currentDayProgram}`;
-            if (program.rest) {
-                scheduleStatus.querySelector('.schedule-title').textContent = '🛌 Rest Day';
-                scheduleStatus.querySelector('.schedule-message').textContent = program.description;
-                scheduleStatus.className = 'status-card rest';
-                startBtn.disabled = true;
-            } else {
-                scheduleStatus.querySelector('.schedule-title').textContent = `💪 Day ${currentDayProgram} Workout`;
-                scheduleStatus.querySelector('.schedule-message').textContent = program.description;
-                scheduleStatus.className = 'status-card workout';
-                startBtn.disabled = false;
-            }
-        }
-
-        function updateScheduleItemsDisplay() {
-            const program = programSchedule[currentDayProgram];
-            scheduleItemsContainer.innerHTML = '';
-            if (program.rest) {
-                scheduleItemsContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 2rem;">Rest and recover today! 💤</div>';
-                return;
-            }
-            let phaseIndex = 0;
-            program.phases.forEach(phaseTemplate => {
-                for (let set = 0; set < phaseTemplate.sets; set++) {
-                    const item = document.createElement('div');
-                    item.className = 'schedule-item';
-                    item.id = `schedule-item-${phaseIndex}`;
-                    const setLabel = phaseTemplate.sets > 1 ? ` (Set ${set + 1}/${phaseTemplate.sets})` : '';
-                    const timeLabel = phaseTemplate.duration >= 60 ? 
-                        `${Math.floor(phaseTemplate.duration / 60)}:${(phaseTemplate.duration % 60).toString().padStart(2, '0')}` :
-                        `00:${phaseTemplate.duration.toString().padStart(2, '0')}`;
-                    item.innerHTML = `
-                        <div style="display: flex; align-items: center;">
-                            <div class="schedule-dot ${phaseTemplate.color}"></div>
-                            <span class="schedule-label">${phaseTemplate.name}${setLabel}</span>
-                        </div>
-                        <span style="color: var(--text-secondary); font-weight: 500;">${timeLabel}</span>
-                    `;
-                    scheduleItemsContainer.appendChild(item);
-                    phaseIndex++;
-                }
-            });
-        }
-
+        // Screen Wake Lock functions
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Screen wake lock activated');
+                    
                     wakeLock.addEventListener('release', () => {
                         console.log('Screen wake lock released');
                     });
@@ -1139,40 +1022,52 @@
                 try {
                     await wakeLock.release();
                     wakeLock = null;
+                    console.log('Screen wake lock released manually');
                 } catch (err) {
                     console.log('Wake lock release failed:', err);
                 }
             }
         }
 
+        // Handle visibility change to re-request wake lock if needed
         document.addEventListener('visibilitychange', async () => {
             if (wakeLock !== null && document.visibilityState === 'visible' && isRunning) {
                 await requestWakeLock();
             }
         });
 
+        // Audio context for beeps
         let audioContext = null;
 
+        // Enhanced sound function with multiple tones
         function playBeep(frequency = 800, duration = 200, type = 'phase') {
             if (!soundEnabled) return;
+            
             try {
                 if (!audioContext) {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
+                
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
+                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
+                
                 if (type === 'completion') {
+                    // Special completion sound
                     oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
                     oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
                     oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
                 } else {
                     oscillator.frequency.value = frequency;
                 }
+                
                 oscillator.type = type === 'completion' ? 'triangle' : 'sine';
+                
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+                
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + duration / 1000);
             } catch (error) {
@@ -1180,24 +1075,30 @@
             }
         }
 
+        // Enhanced voice announcement function
         function speakPhase(phaseName) {
             if (!soundEnabled) return;
+            
             try {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(phaseName.toLowerCase());
                 utterance.rate = 1.2;
                 utterance.volume = 0.8;
                 utterance.pitch = 1.0;
+                
+                // Add emphasis for phase changes
                 if (phaseName === 'FAST') {
                     utterance.rate = 1.4;
                     utterance.pitch = 1.2;
                 }
+                
                 window.speechSynthesis.speak(utterance);
             } catch (error) {
                 console.log('Speech synthesis not available');
             }
         }
 
+        // Date utilities
         function formatDateKey(date) {
             return date.toISOString().split('T')[0];
         }
@@ -1211,6 +1112,7 @@
             return formatDateKey(date1) === formatDateKey(date2);  
         }
 
+        // Calendar functions
         function getDaysInMonth(year, month) {
             return new Date(year, month + 1, 0).getDate();
         }
@@ -1231,34 +1133,49 @@
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
             dayElement.textContent = day;
+            
             if (isOtherMonth) {
                 dayElement.classList.add('other-month');
                 return dayElement;
             }
+            
+            // Check if this is today
             if (isToday(date)) {
                 dayElement.classList.add('today');
             }
+            
+            // Check if this date has a completed workout
             const hasWorkout = workoutLog.some(workout => {
                 const workoutDate = new Date(workout.date);
                 return isSameDate(workoutDate, date);
             });
+            
             if (hasWorkout) {
                 dayElement.classList.add('completed');
             } else if (date < new Date() && !isToday(date)) {
+                // Mark past days without workouts as missed/rest days
                 dayElement.classList.add('rest');
             }
+            
+            // Add click handler for manual editing (only for current/past days, not future)
             if (date <= new Date()) {
                 dayElement.style.cursor = 'pointer';
                 dayElement.addEventListener('click', () => handleCalendarDayClick(date, dayElement));
             }
+            
             return dayElement;
         }
 
         function generateCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
+            
             calendarTitle.textContent = `${getMonthName(month)} ${year}`;
+            
+            // Clear the grid
             calendarGrid.innerHTML = '';
+            
+            // Add day headers
             const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             dayHeaders.forEach(day => {
                 const header = document.createElement('div');
@@ -1266,22 +1183,30 @@
                 header.textContent = day;
                 calendarGrid.appendChild(header);
             });
+            
             const daysInMonth = getDaysInMonth(year, month);
             const firstDay = getFirstDayOfMonth(year, month);
             const daysInPrevMonth = getDaysInMonth(year, month - 1);
+            
+            // Add previous month's trailing days
             for (let i = firstDay - 1; i >= 0; i--) {
                 const day = daysInPrevMonth - i;
                 const prevMonthDate = new Date(year, month - 1, day);
                 const dayElement = createCalendarDay(day, true, prevMonthDate);
                 calendarGrid.appendChild(dayElement);
             }
+            
+            // Add current month's days
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dayElement = createCalendarDay(day, false, date);
                 calendarGrid.appendChild(dayElement);
             }
+            
+            // Add next month's leading days to fill the grid
             const totalCells = calendarGrid.children.length;
-            const remainingCells = 42 - totalCells;
+            const remainingCells = 42 - totalCells; // 6 rows * 7 days - existing cells
+            
             for (let day = 1; day <= remainingCells; day++) {
                 const nextMonthDate = new Date(year, month + 1, day);
                 const dayElement = createCalendarDay(day, true, nextMonthDate);
@@ -1302,49 +1227,74 @@
             generateCalendar();
         }
 
+        // Handle calendar day click for manual editing
         function handleCalendarDayClick(date, dayElement) {
+            const dateKey = formatDateKey(date);
+            
+            // Find existing workout for this date
             const existingWorkoutIndex = workoutLog.findIndex(workout => {
                 const workoutDate = new Date(workout.date);
                 return isSameDate(workoutDate, date);
             });
+            
             if (existingWorkoutIndex !== -1) {
+                // Remove workout
                 workoutLog.splice(existingWorkoutIndex, 1);
                 dayElement.classList.remove('completed');
+                
+                // Add rest day styling if it's a past day
                 if (date < new Date() && !isToday(date)) {
                     dayElement.classList.add('rest');
                 }
+                
+                // Play removal sound
                 playBeep(400, 200);
-                showEditFeedback(dayElement, '✖', '#EF4444');
+                
+                // Show visual feedback
+                showEditFeedback(dayElement, '❌', '#EF4444');
             } else {
+                // Add workout
                 const newWorkout = {
                     date: date.toISOString(),
                     time: 'Manual Entry',
-                    duration: 'Manual',
-                    day: currentDayProgram,
-                    description: 'Manual Entry',
+                    duration: '15 minutes',
+                    cycles: 5,
                     manual: true
                 };
+                
+                // Insert in chronological order (newest first)
                 const insertIndex = workoutLog.findIndex(workout => {
                     const workoutDate = new Date(workout.date);
                     return date > workoutDate;
                 });
+                
                 if (insertIndex === -1) {
                     workoutLog.push(newWorkout);
                 } else {
                     workoutLog.splice(insertIndex, 0, newWorkout);
                 }
+                
                 dayElement.classList.remove('rest');
                 dayElement.classList.add('completed');
+                
+                // Play success sound
                 playBeep(800, 200);
-                showEditFeedback(dayElement, '✓', '#10B981');
+                
+                // Show visual feedback
+                showEditFeedback(dayElement, '✅', '#10B981');
             }
+            
+            // Save changes and update displays
             saveWorkoutLog();
             updateScheduleStatus();
+            
+            // Update log display if it's currently shown
             if (logSection.classList.contains('show')) {
                 updateLogDisplay();
             }
         }
         
+        // Enhanced visual feedback when editing calendar
         function showEditFeedback(dayElement, icon, color) {
             const feedback = document.createElement('div');
             feedback.textContent = icon;
@@ -1360,6 +1310,8 @@
                 text-shadow: 0 0 10px ${color};
                 animation: feedbackPop 0.8s ease-out forwards;
             `;
+            
+            // Add animation keyframes if not already added
             if (!document.getElementById('feedbackAnimation')) {
                 const style = document.createElement('style');
                 style.id = 'feedbackAnimation';
@@ -1372,8 +1324,11 @@
                 `;
                 document.head.appendChild(style);
             }
+            
             dayElement.style.position = 'relative';
             dayElement.appendChild(feedback);
+            
+            // Remove feedback after animation
             setTimeout(() => {
                 if (feedback.parentNode) {
                     feedback.parentNode.removeChild(feedback);
@@ -1381,56 +1336,75 @@
             }, 800);
         }
 
+        // Format time helper
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
+        // Update timer function
         function updateTimer() {
-            if (!sessionStartTime || currentPhases.length === 0) return;
+            if (!sessionStartTime) return;
+            
             const currentTime = Date.now();
             const elapsedTime = Math.floor((currentTime - sessionStartTime - totalPausedTime) / 1000);
             const remainingTime_calc = Math.max(0, (sessionDuration / 1000) - elapsedTime);
+            
             totalTime = elapsedTime;
+            
+            // Calculate phase time
             const phaseElapsed = Math.floor((currentTime - phaseStartTime - totalPausedTime) / 1000);
             phaseTime = phaseElapsed;
-            const currentPhaseData = currentPhases[currentPhase];
-            if (!currentPhaseData) return;
+            
+            // Check for phase change
+            const currentPhaseData = phases.find(p => p.id === currentPhase);
             if (phaseElapsed >= currentPhaseData.duration) {
+                // Phase complete - play sound and move to next phase
                 playBeep(1000, 300);
-                if (currentPhase < currentPhases.length - 1) {
-                    currentPhase++;
-                    const nextPhaseData = currentPhases[currentPhase];
-                    phaseStartTime = currentTime;
-                    phaseTime = 0;
-                    setTimeout(() => {
-                        speakPhase(nextPhaseData.name);
-                    }, 100);
-                }
+                
+                const nextPhase = currentPhase === 3 ? 1 : currentPhase + 1;
+                const nextPhaseData = phases.find(p => p.id === nextPhase);
+                
+                currentPhase = nextPhase;
+                phaseStartTime = currentTime;
+                phaseTime = 0;
+                
+                // Announce the next phase
+                setTimeout(() => {
+                    speakPhase(nextPhaseData.name);
+                }, 100);
             }
+            
+            // Check if workout is complete
             if (remainingTime_calc <= 0) {
                 clearInterval(timerInterval);
-                const program = programSchedule[currentDayProgram];
+                
+                // Workout complete - log it and play special completion sound
                 const completedWorkout = {
                     date: new Date().toISOString(),
                     time: new Date().toLocaleTimeString(),
-                    duration: `${Math.floor(program.totalTime / 60)} minutes`,
-                    day: currentDayProgram,
-                    description: program.description
+                    duration: '15 minutes',
+                    cycles: 5
                 };
                 workoutLog.unshift(completedWorkout);
                 saveWorkoutLog();
+                
                 playBeep(1200, 500, 'completion');
                 isRunning = false;
-                releaseWakeLock();
+                releaseWakeLock(); // Release wake lock when workout completes
+                
                 completionBanner.style.display = 'block';
-                updateCalendar();
+                updateCalendar(); // Update calendar to show new completion
+                
+                // Celebrate with confetti effect
                 createConfetti();
             }
+            
             updateUI();
         }
 
+        // Confetti celebration effect
         function createConfetti() {
             for (let i = 0; i < 100; i++) {
                 const confetti = document.createElement('div');
@@ -1446,13 +1420,17 @@
                     z-index: 10000;
                     animation: confettiFall ${Math.random() * 2 + 2}s linear forwards;
                 `;
+                
                 document.body.appendChild(confetti);
+                
                 setTimeout(() => {
                     if (confetti.parentNode) {
                         confetti.parentNode.removeChild(confetti);
                     }
                 }, 4000);
             }
+            
+            // Add confetti animation if not exists
             if (!document.getElementById('confettiAnimation')) {
                 const style = document.createElement('style');
                 style.id = 'confettiAnimation';
@@ -1467,32 +1445,30 @@
             }
         }
 
+        // Update UI function
         function updateUI() {
-            if (currentPhases.length === 0) {
-                phaseDisplay.querySelector('.phase-name').textContent = 'REST DAY';
-                phaseDisplay.querySelector('.phase-info').textContent = 'Recovery time';
-                phaseTime_el.textContent = '00:00';
-                phaseDisplay.className = 'phase-display rest';
-                return;
-            }
-            const currentPhaseData = currentPhases[currentPhase];
-            if (!currentPhaseData) return;
+            const currentPhaseData = phases.find(p => p.id === currentPhase);
             const remainingTime_calc = Math.max(0, (sessionDuration / 1000) - totalTime);
             const phaseRemaining = Math.max(0, currentPhaseData.duration - phaseTime);
+            
+            // Update phase display
             phaseDisplay.className = `phase-display ${currentPhaseData.color}`;
-            let phaseName = currentPhaseData.name;
-            if (currentPhaseData.totalSets > 1) {
-                phaseName += ` ${currentPhaseData.setNumber}/${currentPhaseData.totalSets}`;
-            }
-            phaseDisplay.querySelector('.phase-name').textContent = phaseName;
-            phaseDisplay.querySelector('.phase-info').textContent = `Phase ${currentPhase + 1} of ${currentPhases.length}`;
+            phaseDisplay.querySelector('.phase-name').textContent = currentPhaseData.name;
+            phaseDisplay.querySelector('.phase-info').textContent = `Phase ${currentPhase} of 3`;
             phaseTime_el.textContent = formatTime(phaseRemaining);
+            
+            // Update progress bars
             const phaseProgress_pct = (phaseTime / currentPhaseData.duration) * 100;
             phaseProgress.style.width = `${Math.min(phaseProgress_pct, 100)}%`;
             phaseProgress.className = `progress-fill ${currentPhaseData.color}`;
+            
             const totalProgress_pct = (totalTime / (sessionDuration / 1000)) * 100;
             totalProgress.style.width = `${Math.min(totalProgress_pct, 100)}%`;
+            
+            // Update remaining time
             remainingTime.textContent = `${formatTime(remainingTime_calc)} remaining`;
+            
+            // Update start button
             if (isRunning) {
                 startBtn.innerHTML = `
                     <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
@@ -1507,80 +1483,86 @@
                 `;
                 startBtn.className = 'btn btn-primary';
             }
+            
+            // Update completion state
             const isWorkoutComplete = totalTime >= (sessionDuration / 1000);
-            const isRestDay = programSchedule[currentDayProgram]?.rest;
-            startBtn.disabled = isWorkoutComplete || isRestDay;
-            currentPhases.forEach((phase, index) => {
-                const item = document.getElementById(`schedule-item-${index}`);
-                if (item) {
-                    if (index === currentPhase && isRunning) {
-                        item.classList.add('active');
-                        const label = item.querySelector('.schedule-label');
-                        if (label) {
-                            label.style.color = 'var(--text-primary)';
-                            label.style.fontWeight = '700';
-                        }
-                    } else {
-                        item.classList.remove('active');
-                        const label = item.querySelector('.schedule-label');
-                        if (label) {
-                            label.style.color = index < currentPhase ? 'var(--text-secondary)' : 'var(--text-muted)';
-                            label.style.fontWeight = '400';
-                        }
-                    }
-                }
-            });
+            startBtn.disabled = isWorkoutComplete;
+            
+            // Update phase schedule highlighting
+            document.getElementById('slowSchedule').classList.toggle('active', currentPhase === 1);
+            document.getElementById('normalSchedule').classList.toggle('active', currentPhase === 2);
+            document.getElementById('fastSchedule').classList.toggle('active', currentPhase === 3);
+            
+            document.getElementById('slowLabel').style.color = currentPhase === 1 ? 'var(--text-primary)' : 'var(--text-muted)';
+            document.getElementById('normalLabel').style.color = currentPhase === 2 ? 'var(--text-primary)' : 'var(--text-muted)';
+            document.getElementById('fastLabel').style.color = currentPhase === 3 ? 'var(--text-primary)' : 'var(--text-muted)';
+            
+            document.getElementById('slowLabel').style.fontWeight = currentPhase === 1 ? '700' : '400';
+            document.getElementById('normalLabel').style.fontWeight = currentPhase === 2 ? '700' : '400';
+            document.getElementById('fastLabel').style.fontWeight = currentPhase === 3 ? '700' : '400';
+            
+            // Update pause banner
             if (sessionStartTime && !isRunning && sessionPauseTime) {
                 pauseBanner.style.display = 'block';
             } else {
                 pauseBanner.style.display = 'none';
             }
+            
+            // Update schedule status
+            updateScheduleStatus();
         }
 
+        // Start timer
         function startTimer() {
             updateTimer();
             timerInterval = setInterval(updateTimer, 100);
         }
 
+        // Handle start/pause button
         function handleStart() {
-            if (programSchedule[currentDayProgram]?.rest) {
-                return;
-            }
             if (!isRunning) {
                 if (!sessionStartTime) {
+                    // Start new session
                     const now = Date.now();
                     sessionStartTime = now;
                     phaseStartTime = now;
                     sessionPauseTime = null;
                     totalPausedTime = 0;
-                    currentPhase = 0;
+                    currentPhase = 1;
                     phaseTime = 0;
                     totalTime = 0;
+                    
                     playBeep(600, 150);
-                    if (currentPhases.length > 0) {
-                        setTimeout(() => {
-                            speakPhase(currentPhases[0].name);
-                        }, 200);
-                    }
+                    
+                    // Announce the starting phase
+                    setTimeout(() => {
+                        speakPhase('slow');
+                    }, 200);
+                    
                     completionBanner.style.display = 'none';
                 } else if (sessionPauseTime) {
+                    // Resume from pause
                     const now = Date.now();
                     totalPausedTime += now - sessionPauseTime;
                     sessionPauseTime = null;
                 }
+                
                 isRunning = true;
-                requestWakeLock();
+                requestWakeLock(); // Keep screen on during workout
                 startTimer();
             } else {
+                // Pause
                 isRunning = false;
                 sessionPauseTime = Date.now();
                 clearInterval(timerInterval);
-                releaseWakeLock();
+                releaseWakeLock(); // Allow screen to turn off when paused
                 playBeep(400, 150);
             }
+            
             updateUI();
         }
 
+        // Handle reset button
         function handleReset() {
             isRunning = false;
             clearInterval(timerInterval);
@@ -1588,18 +1570,23 @@
             sessionPauseTime = null;
             totalPausedTime = 0;
             phaseStartTime = null;
-            currentPhase = 0;
+            currentPhase = 1;
             phaseTime = 0;
             totalTime = 0;
             playBeep(300, 100);
-            releaseWakeLock();
+            
+            releaseWakeLock(); // Release wake lock when resetting
+            
             completionBanner.style.display = 'none';
             pauseBanner.style.display = 'none';
+            
             updateUI();
         }
 
+        // Handle sound toggle
         function handleSoundToggle() {
             soundEnabled = !soundEnabled;
+            
             if (soundEnabled) {
                 soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
                 soundBtn.className = 'btn btn-icon btn-blue';
@@ -1607,17 +1594,26 @@
                 soundIcon.innerHTML = '<path d="m9 9 3 3m0-3-3 3m-6-6v6h4l5 4V5L7 9H1Z"/><path d="m15 9 6 6m0-6-6 6"/>';
                 soundBtn.className = 'btn btn-icon btn-secondary';
             }
+            
+            // Play confirmation sound
             if (soundEnabled) {
                 playBeep(800, 200);
             }
+            
+            // Save setting
             safeSetItem('am1SoundEnabled', soundEnabled.toString());
         }
 
+        // Handle section toggles with smooth animations
         function toggleSection(section, btn) {
             const isShowing = section.classList.contains('show');
+            
+            // Close all sections first
             document.querySelectorAll('.expandable-section').forEach(s => s.classList.remove('show'));
+            
             if (!isShowing) {
                 section.classList.add('show');
+                // Update specific displays when opening
                 if (section === calendarSection) {
                     updateCalendar();
                 } else if (section === logSection) {
@@ -1626,21 +1622,26 @@
                     updateDataSummary();
                 }
             }
+            
             playBeep(600, 100);
         }
 
+        // Handle calendar toggle
         function handleCalendarToggle() {
             toggleSection(calendarSection, calendarBtn);
         }
 
+        // Handle log toggle
         function handleLogToggle() {
             toggleSection(logSection, logBtn);
         }
 
+        // Handle backup toggle
         function handleBackupToggle() {
             toggleSection(backupSection, backupBtn);
         }
 
+        // Update data summary
         function updateDataSummary() {
             const totalWorkouts = workoutLog.length;
             const manualEntries = workoutLog.filter(w => w.manual).length;
@@ -1663,12 +1664,14 @@
             `;
         }
 
+        // Show status message with enhanced styling
         function showBackupStatus(message, type = 'info') {
             const colors = {
                 success: { bg: 'rgba(16, 185, 129, 0.2)', border: 'rgba(16, 185, 129, 0.5)', text: '#10b981' },
                 error: { bg: 'rgba(239, 68, 68, 0.2)', border: 'rgba(239, 68, 68, 0.5)', text: '#ef4444' },
                 info: { bg: 'rgba(59, 130, 246, 0.2)', border: 'rgba(59, 130, 246, 0.5)', text: '#3b82f6' }
             };
+            
             const color = colors[type];
             backupStatus.style.cssText = `
                 display: block;
@@ -1679,11 +1682,13 @@
                 box-shadow: 0 0 20px ${color.border};
             `;
             backupStatus.textContent = message;
+            
             setTimeout(() => {
                 backupStatus.style.display = 'none';
             }, 4000);
         }
 
+        // Export data to JSON
         function handleExportData() {
             try {
                 const exportData = {
@@ -1692,8 +1697,7 @@
                     appName: 'AM1 Elite Workout Timer',
                     workoutLog: workoutLog,
                     settings: {
-                        soundEnabled: soundEnabled,
-                        currentDay: currentDayProgram
+                        soundEnabled: soundEnabled
                     },
                     stats: {
                         totalWorkouts: workoutLog.length,
@@ -1702,12 +1706,15 @@
                         lastWorkout: workoutLog.length > 0 ? Math.max(...workoutLog.map(w => new Date(w.date))) : null
                     }
                 };
+                
                 const dataStr = JSON.stringify(exportData, null, 2);
                 const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(dataBlob);
                 link.download = `AM1_Elite_Backup_${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
+                
                 URL.revokeObjectURL(link.href);
                 showBackupStatus('Data exported successfully! 🎉', 'success');
                 playBeep(800, 200);
@@ -1717,20 +1724,23 @@
             }
         }
 
+        // Download raw JSON
         function handleDownloadJson() {
             try {
                 const rawData = {
                     workoutLog: workoutLog,
                     soundEnabled: soundEnabled,
-                    currentDay: currentDayProgram,
                     exportDate: new Date().toISOString()
                 };
+                
                 const dataStr = JSON.stringify(rawData, null, 2);
                 const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(dataBlob);
                 link.download = `AM1_Raw_Data_${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
+                
                 URL.revokeObjectURL(link.href);
                 showBackupStatus('Raw JSON downloaded! 📋', 'success');
             } catch (error) {
@@ -1738,35 +1748,50 @@
             }
         }
 
+        // Import data from file
         function handleImportData() {
             importFileInput.click();
         }
 
+        // Process imported file
         function processImportFile(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
+                    
+                    // Validate the data structure
                     if (importedData.workoutLog && Array.isArray(importedData.workoutLog)) {
+                        // Merge with existing data or replace
                         const mergeData = confirm('Merge with existing data? (Cancel to replace all data)');
+                        
                         if (mergeData) {
+                            // Merge workouts, avoiding duplicates
                             const existingDates = new Set(workoutLog.map(w => formatDateKey(new Date(w.date))));
                             const newWorkouts = importedData.workoutLog.filter(w => 
                                 !existingDates.has(formatDateKey(new Date(w.date)))
                             );
+                            
                             workoutLog.push(...newWorkouts);
                             workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
+                            
                             showBackupStatus(`Merged ${newWorkouts.length} new workouts! 🔄`, 'success');
                         } else {
+                            // Replace all data
                             workoutLog = importedData.workoutLog.sort((a, b) => new Date(b.date) - new Date(a.date));
                             showBackupStatus(`Imported ${workoutLog.length} workouts! ✨`, 'success');
                         }
+                        
+                        // Import settings if available
                         if (importedData.settings) {
                             if (typeof importedData.settings.soundEnabled === 'boolean') {
                                 soundEnabled = importedData.settings.soundEnabled;
                                 safeSetItem('am1SoundEnabled', soundEnabled.toString());
+                                
+                                // Update sound button
                                 if (soundEnabled) {
                                     soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
                                     soundBtn.className = 'btn btn-icon btn-blue';
@@ -1775,18 +1800,20 @@
                                     soundBtn.className = 'btn btn-icon btn-secondary';
                                 }
                             }
-                            if (typeof importedData.settings.currentDay === 'number') {
-                                updateDayProgram(importedData.settings.currentDay);
-                            }
                         }
+                        
+                        // Save and update displays
                         saveWorkoutLog();
                         updateCalendar();
                         updateScheduleStatus();
                         updateDataSummary();
+                        
                         if (logSection.classList.contains('show')) {
                             updateLogDisplay();
                         }
+                        
                         playBeep(1000, 300);
+                        
                     } else {
                         showBackupStatus('Invalid file format. Please select a valid backup file. ⚠️', 'error');
                         playBeep(300, 500);
@@ -1796,10 +1823,12 @@
                     playBeep(300, 500);
                 }
             };
+            
             reader.readAsText(file);
-            event.target.value = '';
+            event.target.value = ''; // Reset file input
         }
 
+        // Clear all data
         function handleClearData() {
             const confirmation = prompt(
                 '⚠️ DANGER ZONE ⚠️\n\n' +
@@ -1807,40 +1836,50 @@
                 'This action cannot be undone.\n\n' +
                 'Type "DELETE EVERYTHING" to confirm:'
             );
+            
             if (confirmation === 'DELETE EVERYTHING') {
                 workoutLog = [];
                 soundEnabled = true;
+                
+                // Clear storage
                 try {
                     localStorage.removeItem('am1WorkoutLog');
                     localStorage.removeItem('am1SoundEnabled');
-                    localStorage.removeItem('am1CurrentDay');
                 } catch (e) {
                     tempStorage = {};
                 }
-                updateDayProgram(1);
+                
+                // Reset UI
                 updateCalendar();
                 updateScheduleStatus();
                 updateDataSummary();
+                
                 if (logSection.classList.contains('show')) {
                     updateLogDisplay();
                 }
+                
+                // Reset sound button
                 soundIcon.innerHTML = '<path d="M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>';
                 soundBtn.className = 'btn btn-icon btn-blue';
+                
                 showBackupStatus('All data cleared successfully! 🗑️', 'success');
                 playBeep(400, 300);
             } else if (confirmation !== null) {
-                showBackupStatus('Clear cancelled - safety confirmation failed. ✖', 'error');
+                showBackupStatus('Clear cancelled - safety confirmation failed. ❌', 'error');
             }
         }
 
+        // Update log display with enhanced styling
         function updateLogDisplay() {
             logCount.textContent = `${workoutLog.length} sessions`;
+            
             if (workoutLog.length === 0) {
                 logEmpty.style.display = 'block';
                 logItems.style.display = 'none';
             } else {
                 logEmpty.style.display = 'none';
                 logItems.style.display = 'flex';
+                
                 logItems.innerHTML = '';
                 workoutLog.forEach((workout, index) => {
                     const workoutDate = new Date(workout.date);
@@ -1858,21 +1897,24 @@
                         animation: slideInUp 0.3s ease-out;
                         animation-delay: ${index * 0.05}s;
                     `;
+                    
                     item.addEventListener('mouseenter', () => {
                         item.style.transform = 'translateY(-2px)';
                         item.style.boxShadow = 'var(--shadow-light)';
                     });
+                    
                     item.addEventListener('mouseleave', () => {
                         item.style.transform = 'translateY(0)';
                         item.style.boxShadow = 'none';
                     });
+                    
                     const timeDisplay = workout.manual ? 'Manual Entry' : workout.time;
-                    const manualIndicator = workout.manual ? ' 📝' : ' ⏱️';
-                    const dayInfo = workout.day ? ` Day ${workout.day}` : '';
+                    const manualIndicator = workout.manual ? ' 🖊️' : ' ⏱️';
+                    
                     item.innerHTML = `
                         <div>
                             <div style="font-weight: 600; margin-bottom: 0.25rem;">${workoutDate.toLocaleDateString()}${manualIndicator}</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${timeDisplay}${dayInfo}</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${timeDisplay}</div>
                         </div>
                         <div style="text-align: right;">
                             <div style="color: #10b981; font-weight: 600; margin-bottom: 0.25rem;">✓ Complete</div>
@@ -1884,10 +1926,12 @@
             }
         }
 
+        // Save workout log
         function saveWorkoutLog() {
             safeSetItem('am1WorkoutLog', JSON.stringify(workoutLog));
         }
 
+        // Load workout log
         function loadWorkoutLog() {
             const savedLog = safeGetItem('am1WorkoutLog');
             if (savedLog) {
@@ -1899,10 +1943,38 @@
             }
         }
 
+        // Update schedule status
         function updateScheduleStatus() {
-            updateScheduleDisplay();
+            let status, message, className;
+            
+            if (workoutLog.length === 0) {
+                status = '💪 Ready to Dominate';
+                message = 'Your first elite workout awaits!';
+                className = 'workout';
+            } else {
+                const lastWorkout = workoutLog[0];
+                const lastWorkoutDate = new Date(lastWorkout.date);
+                const today = new Date();
+                
+                const isTodayWorkout = isSameDate(lastWorkoutDate, today);
+                
+                if (isTodayWorkout) {
+                    status = '🏆 Mission Complete';
+                    message = 'Outstanding work today! Time to recover and recharge.';
+                    className = 'rest';
+                } else {
+                    status = '🔥 Time to Crush It';
+                    message = 'Ready to unleash your potential!';
+                    className = 'workout';
+                }
+            }
+            
+            scheduleStatus.querySelector('.schedule-title').textContent = status;
+            scheduleStatus.querySelector('.schedule-message').textContent = message;
+            scheduleStatus.className = `status-card ${className}`;
         }
 
+        // Load saved settings
         function loadSettings() {
             const savedSound = safeGetItem('am1SoundEnabled');
             if (savedSound !== null) {
@@ -1912,28 +1984,21 @@
                     soundBtn.className = 'btn btn-icon btn-secondary';
                 }
             }
-            const savedDay = safeGetItem('am1CurrentDay');
-            if (savedDay !== null) {
-                currentDayProgram = parseInt(savedDay, 10);
-                if (currentDayProgram < 1 || currentDayProgram > 14) {
-                    currentDayProgram = 1;
-                }
-            }
-            currentPhases = buildPhasesFromDay(currentDayProgram);
-            const program = programSchedule[currentDayProgram];
-            if (program && !program.rest) {
-                sessionDuration = program.totalTime * 1000;
-            }
         }
 
+        // Initialize app with enhanced startup
         function init() {
+            // Create floating particles
             createParticles();
+            
+            // Load data and settings
             loadSettings();
             loadWorkoutLog();
             updateUI();
-            updateScheduleDisplay();
-            updateScheduleItemsDisplay();
+            updateScheduleStatus();
             generateCalendar();
+            
+            // Add event listeners
             startBtn.addEventListener('click', handleStart);
             resetBtn.addEventListener('click', handleReset);
             soundBtn.addEventListener('click', handleSoundToggle);
@@ -1947,8 +2012,8 @@
             importFileInput.addEventListener('change', processImportFile);
             prevMonth.addEventListener('click', () => handleCalendarNav('prev'));
             nextMonth.addEventListener('click', () => handleCalendarNav('next'));
-            prevDay.addEventListener('click', () => handleDayNav('prev'));
-            nextDay.addEventListener('click', () => handleDayNav('next'));
+            
+            // Add keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space' && !e.target.matches('input, textarea, button')) {
                     e.preventDefault();
@@ -1959,30 +2024,31 @@
                 } else if (e.code === 'KeyS' && e.ctrlKey) {
                     e.preventDefault();
                     handleSoundToggle();
-                } else if (e.code === 'ArrowLeft' && e.ctrlKey) {
-                    e.preventDefault();
-                    handleDayNav('prev');
-                } else if (e.code === 'ArrowRight' && e.ctrlKey) {
-                    e.preventDefault();
-                    handleDayNav('next');
                 }
             });
+            
+            // Add touch gestures for mobile
             let touchStartY = 0;
             document.addEventListener('touchstart', (e) => {
                 touchStartY = e.touches[0].clientY;
             });
+            
             document.addEventListener('touchend', (e) => {
                 const touchEndY = e.changedTouches[0].clientY;
                 const diff = touchStartY - touchEndY;
+                
+                // Swipe up to start/pause (only on the main phase display)
                 if (Math.abs(diff) > 50 && e.target.closest('#phaseDisplay')) {
-                    if (diff > 0) {
+                    if (diff > 0) { // Swipe up
                         handleStart();
                     }
                 }
             });
-            console.log('🔥 AM1 Elite Workout Timer initialized with 14-day program!');
+            
+            console.log('🔥 AM1 Elite Workout Timer initialized successfully!');
         }
 
+        // Start the app when page loads
         window.addEventListener('load', init);
     </script>
 </body>
